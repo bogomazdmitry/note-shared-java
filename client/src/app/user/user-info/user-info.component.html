@@ -1,0 +1,224 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col col-sm-12 col-md-8 col-lg-6">
+      <form
+        class="signup-form"
+        [formGroup]="userFormValidation.formGroup"
+        (submit)="onSubmit()"
+      >
+        <mat-card>
+          <mat-card-header class="pb-3">
+            Changing information about you
+          </mat-card-header>
+          <mat-card-content>
+            <mat-form-field class="pb-3">
+              <mat-label>User name</mat-label>
+              <input
+                matInput
+                formControlName="userName"
+                type="text"
+                #userNameInput
+              />
+              <mat-error
+                *ngIf="userFormValidation.getFormField('userName').invalid"
+              >
+                <div
+                  *ngIf="
+                    userFormValidation.getFormField('userName').errors
+                      ?.required &&
+                    userFormValidation.getFormField('userName').touched
+                  "
+                >
+                  User name is required
+                </div>
+                <div
+                  *ngIf="userFormValidation.hasError('userName', 'notUnique')"
+                >
+                  User name is not unique
+                </div>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="pb-3">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                formControlName="email"
+                type="text"
+                #userEmailInput
+              />
+              <mat-error
+                *ngIf="userFormValidation.getFormField('email').invalid"
+              >
+                <div
+                  *ngIf="
+                    userFormValidation.getFormField('email').errors?.required &&
+                    userFormValidation.getFormField('email').touched
+                  "
+                >
+                  Email is required
+                </div>
+                <div
+                  *ngIf="
+                    userFormValidation.hasError('email', 'email') &&
+                    userFormValidation.getFormField('email').touched
+                  "
+                >
+                  Incorrect email
+                </div>
+                <div *ngIf="userFormValidation.hasError('email', 'notUnique')">
+                  Email is not unique
+                </div>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="pb-3">
+              <mat-label for="password">Password</mat-label>
+              <input matInput formControlName="oldPassword" type="password" />
+              <mat-error
+                *ngIf="
+                  userFormValidation.getFormField('oldPassword').invalid &&
+                  userFormValidation.getFormField('oldPassword').touched
+                "
+              >
+                <div
+                  *ngIf="
+                    userFormValidation.getFormField('oldPassword').errors
+                      ?.required;
+                    else passwordNotEmpty
+                  "
+                >
+                  Password is required
+                </div>
+                <ng-template #passwordNotEmpty>
+                  Your password contain the following:
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('oldPassword', 'hasUpperCase')
+                    "
+                  >
+                    at least 1 uppercase letter;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('oldPassword', 'hasLowerCase')
+                    "
+                  >
+                    at least 1 uppercase letter;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('oldPassword', 'hasNumber')
+                    "
+                  >
+                    at least 1 number;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('oldPassword', 'hasLength')
+                    "
+                  >
+                    8-64 characters;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('oldPassword', 'mustMatch')
+                    "
+                  >
+                    password mismatch;
+                  </span>
+                </ng-template>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="pb-3">
+              <mat-label for="password">New password</mat-label>
+              <input matInput formControlName="newPassword" type="password" />
+              <mat-error
+                *ngIf="
+                  userFormValidation.getFormField('newPassword').invalid &&
+                  userFormValidation.getFormField('newPassword').touched
+                "
+              >
+                <div>
+                  Your password contain the following:
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('newPassword', 'hasUpperCase')
+                    "
+                  >
+                    at least 1 uppercase letter;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('newPassword', 'hasLowerCase')
+                    "
+                  >
+                    at least 1 uppercase letter;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('newPassword', 'hasNumber')
+                    "
+                  >
+                    at least 1 number;
+                  </span>
+                  <span
+                    *ngIf="
+                      userFormValidation.hasError('newPassword', 'hasLength')
+                    "
+                  >
+                    8-64 characters;
+                  </span>
+                </div>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="pb-3">
+              <mat-label>Confirm new password</mat-label>
+              <input
+                matInput
+                formControlName="confirmNewPassword"
+                type="password"
+              />
+              <mat-error
+                *ngIf="
+                  userFormValidation.hasError('confirmNewPassword', 'mustMatch')
+                "
+              >
+                Password is not confirm
+              </mat-error>
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="
+                userFormValidation.formGroup.invalid || buttonDisable
+              "
+            >
+              Change
+            </button>
+          </mat-card-content>
+          <mat-card-footer>
+            <ngb-alert
+              type="success"
+              role="alert"
+              (closed)="globalSuccess = ''"
+              *ngIf="globalSuccess && globalSuccess.length != 0"
+            >
+              {{ globalSuccess }}
+            </ngb-alert>
+            <ngb-alert
+              type="danger"
+              role="alert"
+              (closed)="userFormValidation.globalError = ''"
+              *ngIf="
+                userFormValidation.globalError &&
+                userFormValidation.globalError.length != 0
+              "
+            >
+              {{ userFormValidation.globalError }}
+            </ngb-alert>
+          </mat-card-footer>
+        </mat-card>
+      </form>
+    </div>
+  </div>
+</div>

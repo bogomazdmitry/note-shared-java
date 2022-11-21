@@ -1,0 +1,46 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "paths": {
+      "@notification/accepted-request-shared-note" : [
+        "src/app/notifications/accepted-request-shared-note/accepted-request-shared-note.component",
+      ],
+      "@notification/base-notification" : [
+        "src/app/notifications/base-notification/base-notification",
+      ],
+      "@notification/declined-request-shared-note" : [
+        "src/app/notifications/declined-request-shared-note/declined-request-shared-note.component",
+      ],
+      "@notification/request-shared-note" : [
+        "src/app/notifications/request-shared-note/request-shared-note.component"
+      ]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "enableIvy": false,
+    "strictTemplates": true
+  }
+}

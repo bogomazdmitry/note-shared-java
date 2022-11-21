@@ -1,0 +1,105 @@
+@import "./../../../variables.scss";
+
+mat-form-field {
+  textarea.mat-input-element {
+    padding-right: 10px;
+  }
+}
+
+.swatch {
+  border-style: solid;
+  border-width: thin;
+}
+
+.colorPalette.mat-menu-panel {
+  border-radius: 15px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+@import "~bootstrap/scss/bootstrap-grid.scss";
+
+.mat-form-field-wrapper {
+  width: 100%;
+}
+
+.note-dialog-container {
+  padding: 5px;
+
+  @include media-breakpoint-down(md) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  @include media-breakpoint-up(md) {
+    min-height: 300px;
+    min-width: 350px;
+    resize: both;
+    overflow: auto;
+  }
+
+  .mat-form-field-infix {
+    width: auto;
+    border-top: 0;
+    height: 100%;
+  }
+
+  .mat-dialog-title {
+    margin-bottom: 0px;
+  }
+
+  .drag-indicator {
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+
+  textarea.mat-input-element {
+    resize: none;
+  }
+
+  textarea {
+    height: 100%;
+  }
+
+  .box {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .mat-form-field-wrapper {
+    height: 100%;
+  }
+
+  .mat-form-field-flex {
+    height: 100%;
+  }
+
+  .mat-dialog-content {
+    max-height: none;
+  }
+
+  .mat-dialog-container {
+    box-shadow: 0 0 10px $shadow-color;
+    min-height: auto;
+    min-width: auto;
+  }
+
+  .mat-card-note-footer {
+    flex-wrap: nowrap;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    .mat-chip-list-wrapper {
+      flex-wrap: nowrap;
+    }
+    .email-note-card {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+}
+
+.note-dialog-container .mat-dialog-container {
+  padding: 0px;
+}

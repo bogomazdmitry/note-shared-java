@@ -1,0 +1,22 @@
+@import '../../../mixins.scss';
+
+mat-card {
+  padding: 11px;
+  @include mat-card-style;
+
+  mat-card-header {
+    $lines-title: 2;
+    mat-card-title {
+      @include note-text-mat-card;
+    }
+  }
+
+  mat-card-content {
+    @include note-text-mat-card;
+  }
+}
+
+div.mat-card-header-text {
+  margin-left: 0%;
+  margin-right: 0%;
+}

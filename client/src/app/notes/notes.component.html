@@ -1,0 +1,16 @@
+<div class="buttons-panel">
+  <div class="add-note">
+    <button mat-button (click)="createNote()">
+      <mat-icon class="mx-1">add</mat-icon>
+      Add new note
+    </button>
+  </div>
+  <notifications-home> </notifications-home>
+</div>
+<div #gridElement class="grid hide">
+  <div class="item col p-1" *ngFor="let note of getNotes()">
+    <div class="item-content">
+      <notes-note [note]="note"></notes-note>
+    </div>
+  </div>
+</div>

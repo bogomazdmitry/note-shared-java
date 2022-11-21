@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-sm-12 col-md-8 col-lg-6">
+            <form #formSignIn class="signin-form" [formGroup]="signInFormValidator.formGroup" (submit)="onSubmit()">
+                <mat-card>
+                    <mat-card-header class="pb-3">
+                        Login
+                    </mat-card-header>
+                    <mat-card-content>
+                        <mat-form-field #matInputEmail class="pb-3">
+                            <mat-label>Email</mat-label>
+                            <input #inputEmail matInput formControlName="email" value="" type="text">
+                            <mat-error *ngIf="signInFormValidator.getFormField('email').invalid
+                                && signInFormValidator.getFormField('email').touched">
+                                <div *ngIf="signInFormValidator.hasError('email', 'required')">
+                                    Email is required
+                                </div>
+                                <mat-error *ngIf="signInFormValidator.hasError('email','email')">
+                                    Incorrect email
+                                </mat-error>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="pb-3">
+                            <mat-label for="password">Password</mat-label>
+                            <input #inputPassword matInput formControlName="password" value="" type="password">
+                            <mat-error *ngIf="signInFormValidator.getFormField('password').invalid
+                                && signInFormValidator.getFormField('password').touched">
+                                <div>Incorrect password</div>
+                            </mat-error>
+                        </mat-form-field>
+                        <button mat-raised-button
+                            color="primary"
+                            type="submit"
+                            [disabled]="signInFormValidator.formGroup.invalid || buttonDisable" >
+                            Login
+                        </button>
+                    </mat-card-content>
+                    <mat-card-footer>
+                        <ngb-alert
+                            type="danger"
+                            role="alert"
+                            (closed)="signInFormValidator.globalError = ''"
+                            *ngIf="(signInFormValidator.globalError &&
+                                signInFormValidator.globalError.length != 0)">
+                            {{signInFormValidator.globalError}}
+                        </ngb-alert>
+                    </mat-card-footer>
+                </mat-card>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div [style.background-color]="this.note.hexColor" class="wide-container box">
+  <h1 mat-dialog-title class="d-flex">
+    <mat-form-field class="px-0 w-100">
+      <input matInput [(ngModel)]="note.noteText.title" />
+    </mat-form-field>
+    <button
+      mat-icon-button
+      cdkDragHandle
+      cdkDrag
+      cdkDragRootElement=".cdk-overlay-pane"
+      class="mx-1 flex-shrink-2 drag-indicator"
+    >
+      <mat-icon>drag_indicator</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="mx-1 flex-shrink-2 col-auto"
+      (click)="saveNote()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </h1>
+  <mat-dialog-content class="h-100">
+    <div mat-dialog-content class="h-100">
+      <mat-form-field class="w-100 h-100">
+        <textarea matInput [(ngModel)]="note.noteText.text"> </textarea>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="mat-card-note-footer">
+    <button mat-icon-button (click)="saveNote()">
+      <mat-icon> save </mat-icon>
+    </button>
+    <button mat-icon-button (click)="deleteNote()">
+      <mat-icon> delete </mat-icon>
+    </button>
+    <button mat-icon-button mat-icon-button [matMenuTriggerFor]="colorPalette">
+      <mat-icon> palette </mat-icon>
+    </button>
+    <mat-menu #colorPalette="matMenu" class="colorPalette">
+      <color-circle
+        color="{{ note.hexColor }}"
+        [colors]="getColors()"
+        (onChange)="changeColorHandler($event)"
+      ></color-circle>
+    </mat-menu>
+    <div *ngIf="canAddSharedUsers(); else chipListWithoutDelete" class="flex-grow-1">
+      <input
+      placeholder="Add user for editing"
+      [matChipInputFor]="chipList"
+      (matChipInputTokenEnd)="addUser($event)"
+      class="w-100 m-0"
+      />
+      <mat-chip-list #chipList>
+        <mat-chip
+          *ngFor="let userEmail of userEmails"
+          [selectable]="true"
+          [removable]="true"
+          (removed)="removeUser(userEmail)"
+          [color]="note.hexColor"
+        >
+        <span class="email-note-card">
+            {{ userEmail }}
+          </span>
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <ng-template #chipListWithoutDelete>
+      <mat-chip-list>
+        <mat-chip
+        *ngFor="let userEmail of userEmails"
+        [selectable]="true"
+        [color]="note.hexColor"
+      >
+      <span class="email-note-card">
+          {{ userEmail }}
+      </span>
+      </mat-chip>
+    </mat-chip-list>
+  </ng-template>
+</div>

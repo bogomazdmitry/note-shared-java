@@ -1,0 +1,34 @@
+@import "~bootstrap/scss/bootstrap";
+@import "../src/dark-theme.scss";
+@import "../src/light-theme.scss";
+@import "./variables.scss";
+
+html {
+  position: relative;
+  min-height: 100%;
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    cursor: default;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 5px;
+  }
+}
+
+body {
+  margin: 0;
+  margin-bottom: 90px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.date-time {
+  font-size: $font-size-date-time;
+}
+
+@import "../src/app/notes/note-dialog/note-dialog.component.scss";
+@import "../src/app//notifications/notifications.component.scss";

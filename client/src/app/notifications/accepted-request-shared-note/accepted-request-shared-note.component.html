@@ -1,0 +1,16 @@
+<mat-card>
+  <div class="d-flex justify-content-start align-items-center">
+    <span class="material-icons mr-2">
+      task_alt
+    </span>
+    <div class="flex-fill">
+      User with email {{ content.fromUserEmail }} accepted your propose!
+    </div>
+    <button mat-icon-button click-stop-propagation (click)="deleteNotification()">
+      <mat-icon> delete </mat-icon>
+    </button>
+  </div>
+  <mat-card-footer class="float-right date-time mx-1">
+    {{ notification.createDateTime | date: 'short' }}
+  </mat-card-footer>
+</mat-card>

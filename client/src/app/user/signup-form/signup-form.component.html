@@ -1,0 +1,102 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-sm-12 col-md-8 col-lg-6">
+            <form class="signup-form" [formGroup]="signUpFormValidator.formGroup" (submit)="onSubmit()">
+                <mat-card>
+                    <mat-card-header class="pb-3">
+                        Registration
+                    </mat-card-header>
+                    <mat-card-content>
+                        <mat-form-field class="pb-3">
+                            <mat-label>User name</mat-label>
+                            <input matInput
+                                formControlName="userName"
+                                type="text" autocomplete="new-name">
+                            <mat-error *ngIf="signUpFormValidator.getFormField('userName').invalid">
+                                <div *ngIf="signUpFormValidator.getFormField('userName').errors?.required
+                                    && signUpFormValidator.getFormField('userName').touched">
+                                    User name is required
+                                </div>
+                                <div *ngIf="signUpFormValidator.hasError('userName','notUnique')">
+                                    User name is not unique
+                                </div>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="pb-3">
+                            <mat-label>Email</mat-label>
+                            <input matInput
+                                formControlName="email"
+                                type="text" autocomplete="new-email">
+                            <mat-error *ngIf="signUpFormValidator.getFormField('email').invalid">
+                                <div *ngIf="signUpFormValidator.getFormField('email').errors?.required
+                                    && signUpFormValidator.getFormField('email').touched">
+                                    Email is required
+                                </div>
+                                <div *ngIf="signUpFormValidator.hasError('email','email')
+                                    && signUpFormValidator.getFormField('email').touched">
+                                    Incorrect email
+                                </div>
+                                <div *ngIf="signUpFormValidator.hasError('email','notUnique')">
+                                    Email is not unique
+                                </div>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="pb-3">
+                            <mat-label for="password">Password</mat-label>
+                            <input matInput formControlName="password" type="password" autocomplete="new-password">
+                            <mat-error *ngIf="signUpFormValidator.getFormField('password').invalid
+                                && signUpFormValidator.getFormField('password').touched">
+                                <div *ngIf="signUpFormValidator.getFormField('password').errors?.required;
+                                    else passwordNotEmpty">
+                                    Password is required
+                                </div>
+                                <ng-template #passwordNotEmpty>
+                                    Your password contain the following:
+                                    <span
+                                        *ngIf="signUpFormValidator.hasError('password','hasUpperCase')">
+                                        at least 1 uppercase letter;
+                                    </span>
+                                    <span
+                                        *ngIf="signUpFormValidator.hasError('password','hasLowerCase')">
+                                        at least 1 uppercase letter;
+                                    </span>
+                                    <span
+                                        *ngIf="signUpFormValidator.hasError('password','hasNumber')">
+                                        at least 1 number;
+                                    </span>
+                                    <span
+                                        *ngIf="signUpFormValidator.hasError('password','hasLength')">
+                                        8-64 characters;
+                                    </span>
+                                </ng-template>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="pb-3">
+                            <mat-label>Confirm password</mat-label>
+                            <input matInput formControlName="confirmPassword" type="password"  autocomplete="confirm-new-password">
+                            <mat-error *ngIf="signUpFormValidator.hasError('confirmPassword','mustMatch')">
+                                Password is not confirm
+                            </mat-error>
+                        </mat-form-field>
+                        <button mat-raised-button
+                            color="primary"
+                            type="submit"
+                            [disabled]="signUpFormValidator.formGroup.invalid || buttonDisable">
+                            Registration
+                        </button>
+                    </mat-card-content>
+                    <mat-card-footer>
+                        <ngb-alert
+                            type="danger"
+                            role="alert"
+                            (closed)="signUpFormValidator.globalError = ''"
+                            *ngIf="(signUpFormValidator.globalError &&
+                                signUpFormValidator.globalError.length != 0)">
+                            {{signUpFormValidator.globalError}}
+                        </ngb-alert>
+                    </mat-card-footer>
+                </mat-card>
+            </form>
+        </div>
+    </div>
+</div>

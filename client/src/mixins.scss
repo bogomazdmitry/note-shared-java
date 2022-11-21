@@ -1,0 +1,21 @@
+@import './variables.scss';
+
+@mixin mat-card-style {
+  border-radius: $border-radius-card;
+  border-style: solid;
+  border-width: thin;
+}
+
+@mixin note-text-mat-card {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -ms-line-clamp: $lines-content-note;
+  -webkit-line-clamp: $lines-content-note;
+  line-clamp: $lines-content-note;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  width: 100%;
+  font-size: $font-size-note-text;
+}

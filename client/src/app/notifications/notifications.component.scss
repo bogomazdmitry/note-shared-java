@@ -1,0 +1,25 @@
+@import "~bootstrap/scss/bootstrap-grid.scss";
+@import '../../mixins.scss';
+
+.notification-menu.mat-menu-panel {
+  max-width: 400px;
+  max-height: 500px;
+  padding: 10px;
+
+  @include media-breakpoint-down(md) {
+    max-width: 100%;
+  }
+
+  .mat-menu-content {
+    padding-bottom: 0px;
+    padding-top: 0px;
+  }
+
+  @include mat-card-style;
+  box-shadow: -15px 15px 50px $shadow-color;
+
+  mat-card {
+    @include mat-card-style;
+    margin: 1ch;
+  }
+}

@@ -1,0 +1,43 @@
+<mat-toolbar class="mb-4" color="primary">
+  <span>
+    <button mat-flat-button color="primary" routerLink="/">Shared notes</button>
+  </span>
+  <span class="flex-fill"></span>
+  <shared-theme-changer></shared-theme-changer>
+  <div *ngIf="userIsAuthorize(); else UnAuthorizeBlock">
+    <button mat-flat-button color="primary" routerLink="/user/info">
+      <mat-icon aria-hidden="false" aria-label="Account">
+        account_circle
+      </mat-icon>
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="signOut()"
+      aria-label="Sign out"
+    >
+      Sign out
+    </button>
+  </div>
+  <ng-template #UnAuthorizeBlock>
+    <button
+      mat-flat-button
+      color="primary"
+      routerLink="/user/signin"
+      [queryParams]="{
+        backUrl: backUrl
+      }"
+      aria-label="Sign in"
+    >
+      Sign in
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      routerLink="/user/signup"
+      aria-label="Sign up"
+    >
+      Sign up
+    </button>
+  </ng-template>
+</mat-toolbar>

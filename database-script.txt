@@ -1,0 +1,76 @@
+CREATE TABLE note_design
+(
+    id      INT AUTO_INCREMENT NOT NULL,
+    color   VARCHAR(255)       NULL,
+    note_id INT                NULL,
+    CONSTRAINT pk_notedesign PRIMARY KEY (id)
+);
+
+CREATE TABLE note_history
+(
+    id                     INT AUTO_INCREMENT NOT NULL,
+    created_date_time      date               NULL,
+    last_changes_date_time date               NULL,
+    note_id                INT                NULL,
+    CONSTRAINT pk_notehistory PRIMARY KEY (id)
+);
+
+CREATE TABLE note
+(
+    id              INT AUTO_INCREMENT NOT NULL,
+    `order`         INT                NULL,
+    note_text_id    INT                NULL,
+    note_design_id  INT                NULL,
+    note_history_id INT                NULL,
+    user_id         INT                NULL,
+    user_role       INT                NULL,
+    CONSTRAINT pk_note PRIMARY KEY (id)
+);
+
+CREATE TABLE note_text
+(
+    id    INT AUTO_INCREMENT NOT NULL,
+    title VARCHAR(255)       NULL,
+    text  VARCHAR(255)       NULL,
+    CONSTRAINT pk_notetext PRIMARY KEY (id)
+);
+CREATE TABLE notification
+(
+    id               INT AUTO_INCREMENT NOT NULL,
+    content          VARCHAR(255)       NULL,
+    type             INT                NULL,
+    user_id          INT                NULL,
+    create_date_time date               NULL,
+    CONSTRAINT pk_notification PRIMARY KEY (id)
+);
+
+CREATE TABLE user
+(
+    id        INT AUTO_INCREMENT NOT NULL,
+    email     VARCHAR(255) NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    password  VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_user PRIMARY KEY (id)
+);
+
+
+ALTER TABLE notification
+    ADD CONSTRAINT FK_NOTIFICATION_ON_USER FOREIGN KEY (user_id) REFERENCES user (id);
+
+ALTER TABLE note
+    ADD CONSTRAINT FK_NOTE_ON_NOTEDESIGN FOREIGN KEY (note_design_id) REFERENCES note_design (id);
+
+ALTER TABLE note
+    ADD CONSTRAINT FK_NOTE_ON_NOTEHISTORY FOREIGN KEY (note_history_id) REFERENCES note_history (id);
+
+ALTER TABLE note
+    ADD CONSTRAINT FK_NOTE_ON_NOTETEXT FOREIGN KEY (note_text_id) REFERENCES note_text (id);
+
+ALTER TABLE note
+    ADD CONSTRAINT FK_NOTE_ON_USER FOREIGN KEY (user_id) REFERENCES user (id);
+
+ALTER TABLE note_history
+    ADD CONSTRAINT FK_NOTEHISTORY_ON_NOTE FOREIGN KEY (note_id) REFERENCES note (id);
+
+ALTER TABLE note_design
+    ADD CONSTRAINT FK_NOTEDESIGN_ON_NOTE FOREIGN KEY (note_id) REFERENCES note (id);
