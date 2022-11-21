@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ChangeUserInfo } from 'src/app/shared/models/change-user-info.model';
 import { UserDataService } from 'src/app/shared/services/user.data.service';
@@ -16,7 +17,8 @@ export class UserInfoComponent implements OnInit {
   public constructor(
     private readonly userService: UserService,
     private readonly userDataService: UserDataService,
-    public userFormValidation: UserFormService
+    public userFormValidation: UserFormService,
+    public readonly authService: AuthService,
   ) {}
 
   public ngOnInit(): void {
@@ -35,6 +37,7 @@ export class UserInfoComponent implements OnInit {
           confirmNewPassword: '',
           newPassword: '',
         };
+        this.authService.saveAccessToken(userInfo.token);
         this.userService.saveUser(userInfo);
         this.globalSuccess = 'Changed!';
         this.buttonDisable = false;

@@ -6,6 +6,8 @@ import com.noteshared.mappers.UserMapper;
 import com.noteshared.models.requests.ChangeUserInfoRequest;
 import com.noteshared.models.responses.ServiceResponseT;
 import com.noteshared.models.responses.UserInfoResponse;
+import com.noteshared.models.responses.UserInfoTokenResponse;
+import com.noteshared.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,17 +25,7 @@ public class UsersService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    @Transactional
-    public User addUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        try {
-            User registeredUser = userRepository.save(user);
-            return registeredUser;
-        } catch (Exception exc) {
-            throw exc;
-        }
-    }
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public User findUserByEmail(String email) {
@@ -59,11 +51,41 @@ public class UsersService {
         {
             return new ServiceResponseT<UserInfoResponse>("user notFound");
         }
-        UserInfoResponse userInfo = userMapper.userToUserInfo(user.get());
+        UserInfoResponse userInfo = userMapper.userToUserInfoResponse(user.get());
         return new ServiceResponseT<UserInfoResponse>(userInfo);
     }
 
-    public ServiceResponseT<UserInfoResponse> setUserInfo(ChangeUserInfoRequest userInfo, String userName) {
-        return null;
+    public ServiceResponseT<UserInfoTokenResponse> setUserInfo(ChangeUserInfoRequest userInfo, String userName) {
+        var userOptional = userRepository.findByUserName(userName);
+        if (userOptional == null)
+        {
+            return new ServiceResponseT<>("user notFound");
+        }
+        if (userInfo.getNewPassword() != null &&
+                userInfo.getConfirmNewPassword() != null &&
+                !userInfo.getNewPassword().equals(userInfo.getConfirmNewPassword())
+        ){
+            return new ServiceResponseT<>("newPassword mustMatch");
+        }
+        if(userInfo.getUserName() == null) {
+            return new ServiceResponseT<>("userName empty");
+        }
+        if(userInfo.getEmail() == null) {
+            return new ServiceResponseT<>("email empty");
+        }
+        var user = userOptional.get();
+        if(passwordEncoder.encode(userInfo.getOldPassword()).equals(user.getPassword())) {
+            return new ServiceResponseT<>("oldPassword mustMatch");
+        }
+        user.setUserName(userInfo.getUserName());
+        if(userInfo.getNewPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userInfo.getNewPassword()));
+        }
+        user.setEmail(userInfo.getEmail());
+        userRepository.save(user);
+        String token = tokenProvider.createToken(user.getUserName());
+        var resultUserInfoToken = userMapper.userToUserInfoTokenResponse(user);
+        resultUserInfoToken.setToken(token);
+        return new ServiceResponseT<>(resultUserInfoToken);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,9 +24,9 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final UsersService usersService;
     private final TokenProvider tokenProvider;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public ServiceResponseT<SignInResponse> signIn(SignInUserRequest authenticationDTO) {
         if (authenticationDTO.getEmail() == null || authenticationDTO.getPassword() == null) {
@@ -60,7 +61,8 @@ public class AuthService {
         }
 
         User user = userMapper.signUpDtoToUser(signUpUserRequest);
-        User userRegistered = usersService.addUser(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
         return new ServiceResponseT<>(signUpUserRequest);
     }
 
@@ -86,7 +88,7 @@ public class AuthService {
         String email = authenticationDto.getEmail();
         String password = authenticationDto.getPassword();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        return usersService.findUserByEmail(email);
+        return userRepository.findByEmail(email).get();
     }
 
     private SignInResponse createSignInResponse(User user) {
