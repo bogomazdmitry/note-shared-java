@@ -1,22 +1,24 @@
 package com.noteshared.domain.entities.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.noteshared.domain.entities.notes.Note;
 import com.noteshared.domain.entities.notifications.Notification;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -30,9 +32,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany
-    private Collection<Note> notes;
-
-    @OneToMany
-    private Collection<Notification> notification;
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Note> notes = new ArrayList<>();
 }

@@ -1,12 +1,18 @@
 package com.noteshared.domain.entities.notetexts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.noteshared.domain.entities.notes.Note;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table
 public class NoteText {
@@ -18,6 +24,8 @@ public class NoteText {
 
     private String text;
 
-    @OneToMany
-    private Collection<Note> notes;
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Note> notes;
 }

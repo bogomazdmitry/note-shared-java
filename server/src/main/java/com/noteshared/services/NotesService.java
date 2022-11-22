@@ -1,23 +1,120 @@
 package com.noteshared.services;
 
 import com.noteshared.domain.entities.notes.NoteRepository;
+import com.noteshared.domain.entities.notes.UserRoleForNote;
+import com.noteshared.domain.entities.users.UserRepository;
+import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.mappers.NoteMapper;
+import com.noteshared.models.DTO.NoteOrderDto;
+import com.noteshared.models.responses.ServiceResponse;
 import com.noteshared.models.responses.ServiceResponseT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class NotesService {
     private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
     private final NoteMapper noteMapper;
 
-    public ServiceResponseT<NoteDto> GetNote() {
-        var note = noteRepository.getById(1);
+    public ServiceResponseT<NoteDto> GetNote(String currentUserName, int noteID) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getId() == noteID).findFirst().get();
         var noteDto = noteMapper.noteToNoteDto(note);
         return new ServiceResponseT<>(noteDto);
+    }
+
+    public ServiceResponseT<NoteDto> CreateNote(String currentUserName, NoteDto noteDto) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var note = noteMapper.noteDtoToNote(noteDto);
+        note.setUser(user);
+        note.setNoteText(null);
+        note.setUser(user);
+        user.getNotes().add(note);
+        noteRepository.save(note);
+        var newNoteDto = noteMapper.noteToNoteDto(note);
+        return new ServiceResponseT<>(newNoteDto);
+    }
+
+    public ServiceResponse DeleteNote(String currentUserName, int noteID) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getId() == noteID).findFirst().get();
+        if(note == null) {
+            return new ServiceResponse("Not allowed");
+        }
+        noteRepository.delete(note);
+        return new ServiceResponse();
+    }
+
+    public ServiceResponseT<NoteDto> UpdateNote(String currentUserName, NoteDto updateNoteDto) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getId() == updateNoteDto.getId()).findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        updateNoteDto.setUserRole(note.getUserRole());
+
+        note = noteMapper.noteDtoToNote(updateNoteDto);
+        var updatedNote = noteRepository.save(note);
+
+        var updatedNoteDto = noteMapper.noteToNoteDto(updatedNote);
+        return new ServiceResponseT<NoteDto>(updatedNoteDto);
+    }
+
+    public ServiceResponseT<NoteDesignDto> UpdateNoteDesign(String currentUserName, NoteDesignDto updateNoteDesignDto) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getId() == updateNoteDesignDto.getNoteID()).findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        var oldNoteDesign = note.getNoteDesign();
+        var newNoteDesign = noteMapper.noteDesignDtoToNoteDesign(updateNoteDesignDto);
+        newNoteDesign.setId(oldNoteDesign.getId());
+
+        note.setNoteDesign(newNoteDesign);
+        noteRepository.save(note);
+        var newNoteDesignDto = noteMapper.noteDesignToNoteDesignDto(newNoteDesign);
+        return new ServiceResponseT<>(newNoteDesignDto);
+    }
+
+    public ServiceResponseT<Collection<String>> GetUserEmailListByNoteTextID(String currentUserName, int noteTextID) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getNoteText().getId() == noteTextID).findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        var userEmails = note.getNoteText().getNotes().stream().map(n -> n.getUser().getEmail());
+        return new ServiceResponseT<>(userEmails.collect(Collectors.toList()));
+    }
+
+    public ServiceResponseT<List<NoteDto>> GetAllNotes(String currentUserName) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var noteDto = noteList.stream().map(n -> noteMapper.noteToNoteDto(n));
+        return new ServiceResponseT<>(noteDto.collect(Collectors.toList()));
+    }
+
+    public ServiceResponseT<List<NoteOrderDto>> UpdateOrderNotes(String currentUserName, List<NoteOrderDto> notesOrder) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        noteList.stream().parallel().forEach(n -> {
+            n.setOrder(notesOrder.stream().filter(n1 -> n1.getId() == n.getId()).findFirst().get().getOrder());
+        });
+        noteRepository.saveAll(noteList);
+        return new ServiceResponseT<>(notesOrder);
     }
 }
