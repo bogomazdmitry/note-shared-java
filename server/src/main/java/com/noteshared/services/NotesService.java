@@ -7,6 +7,7 @@ import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.mappers.NoteMapper;
 import com.noteshared.models.DTO.NoteOrderDto;
+import com.noteshared.models.DTO.NoteTextDto;
 import com.noteshared.models.responses.ServiceResponse;
 import com.noteshared.models.responses.ServiceResponseT;
 import lombok.RequiredArgsConstructor;
@@ -116,5 +117,35 @@ public class NotesService {
         });
         noteRepository.saveAll(noteList);
         return new ServiceResponseT<>(notesOrder);
+    }
+
+    public ServiceResponseT<NoteTextDto> updateNoteText(String currentUserName, NoteTextDto updateNoteTextDto)
+    {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getNoteText().getId() == updateNoteTextDto.getId()).findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        var oldNoteText = note.getNoteText();
+        var newNoteText = noteMapper.noteTextDtoToNoteText(updateNoteTextDto);
+        newNoteText.setId(oldNoteText.getId());
+
+        note.setNoteText(newNoteText);
+        noteRepository.save(note);
+        var newNoteTextDto = noteMapper.noteTextToNoteTextDto(newNoteText);
+        return new ServiceResponseT<>(newNoteTextDto);
+    }
+
+    public ServiceResponseT<List<Integer>> GetUserIDListByNoteTextID(String currentUserName, int noteTextID)
+    {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n -> n.getNoteText().getId() == noteTextID).findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        var userIdList = note.getNoteText().getNotes().stream().map(n -> n.getUser().getId());
+        return new ServiceResponseT<>(userIdList.collect(Collectors.toList()));
     }
 }
