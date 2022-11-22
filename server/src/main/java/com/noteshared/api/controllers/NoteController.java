@@ -5,7 +5,6 @@ import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.models.DTO.NoteTextDto;
 import com.noteshared.services.NotesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +21,7 @@ public class NoteController extends BaseController{
     @RequestMapping(method = RequestMethod.GET)
     public NoteDto Get(int noteID)
     {
-        var result = notesService.GetNote(getCurrentUserName(), noteID);
+        var result = notesService.getNote(getCurrentUserName(), noteID);
         return ResultOf(result);
     }
 
@@ -32,35 +31,35 @@ public class NoteController extends BaseController{
         var note = new NoteDto();
         note.setOrder(noteOrder);
         note.setNoteText(new NoteTextDto());
-        var result = notesService.CreateNote(getCurrentUserName(), note);
+        var result = notesService.createNote(getCurrentUserName(), note);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public void Delete(int noteID)
     {
-        var result = notesService.DeleteNote(getCurrentUserName(), noteID);
+        var result = notesService.deleteNote(getCurrentUserName(), noteID);
         ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-note")
     public NoteDto UpdateNote(@RequestBody NoteDto updateNoteDto)
     {
-        var result = notesService.UpdateNote(getCurrentUserName(), updateNoteDto);
+        var result = notesService.updateNote(getCurrentUserName(), updateNoteDto);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-note-design")
     public NoteDesignDto UpdateDesignNote(@RequestBody NoteDesignDto updateNoteDesignDto)
     {
-        var result = notesService.UpdateNoteDesign(getCurrentUserName(), updateNoteDesignDto);
+        var result = notesService.updateNoteDesign(getCurrentUserName(), updateNoteDesignDto);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.GET, value="shared-users-emails")
     public Collection<String> GetSharedUserEmails(int noteTextID)
     {
-        var result = notesService.GetUserEmailListByNoteTextID(getCurrentUserName(), noteTextID);
+        var result = notesService.getUserEmailListByNoteTextID(getCurrentUserName(), noteTextID);
         return ResultOf(result);
     }
 }

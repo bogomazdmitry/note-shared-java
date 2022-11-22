@@ -1,12 +1,12 @@
 package com.noteshared.models.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+@Data
 public class RequestSharedNoteNotificationContent
 {
-    @JsonProperty("fromUserEmail")
-    private String FromUserEmail;
+    private String fromUserEmail;
 
-    @JsonProperty("noteTextID")
-    public int NoteTextID;
+    public int noteTextID;
 }

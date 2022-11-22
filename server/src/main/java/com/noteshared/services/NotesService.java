@@ -26,7 +26,7 @@ public class NotesService {
     private final UserRepository userRepository;
     private final NoteMapper noteMapper;
 
-    public ServiceResponseT<NoteDto> GetNote(String currentUserName, int noteID) {
+    public ServiceResponseT<NoteDto> getNote(String currentUserName, int noteID) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var note = noteList.stream().filter(n -> n.getId() == noteID).findFirst().get();
@@ -34,7 +34,7 @@ public class NotesService {
         return new ServiceResponseT<>(noteDto);
     }
 
-    public ServiceResponseT<NoteDto> CreateNote(String currentUserName, NoteDto noteDto) {
+    public ServiceResponseT<NoteDto> createNote(String currentUserName, NoteDto noteDto) {
         var user = userRepository.findByUserName(currentUserName).get();
         var note = noteMapper.noteDtoToNote(noteDto);
         note.setUser(user);
@@ -46,7 +46,7 @@ public class NotesService {
         return new ServiceResponseT<>(newNoteDto);
     }
 
-    public ServiceResponse DeleteNote(String currentUserName, int noteID) {
+    public ServiceResponse deleteNote(String currentUserName, int noteID) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var note = noteList.stream().filter(n -> n.getId() == noteID).findFirst().get();
@@ -57,7 +57,7 @@ public class NotesService {
         return new ServiceResponse();
     }
 
-    public ServiceResponseT<NoteDto> UpdateNote(String currentUserName, NoteDto updateNoteDto) {
+    public ServiceResponseT<NoteDto> updateNote(String currentUserName, NoteDto updateNoteDto) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var note = noteList.stream().filter(n -> n.getId() == updateNoteDto.getId()).findFirst().get();
@@ -73,7 +73,7 @@ public class NotesService {
         return new ServiceResponseT<NoteDto>(updatedNoteDto);
     }
 
-    public ServiceResponseT<NoteDesignDto> UpdateNoteDesign(String currentUserName, NoteDesignDto updateNoteDesignDto) {
+    public ServiceResponseT<NoteDesignDto> updateNoteDesign(String currentUserName, NoteDesignDto updateNoteDesignDto) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var note = noteList.stream().filter(n -> n.getId() == updateNoteDesignDto.getNoteID()).findFirst().get();
@@ -90,7 +90,7 @@ public class NotesService {
         return new ServiceResponseT<>(newNoteDesignDto);
     }
 
-    public ServiceResponseT<Collection<String>> GetUserEmailListByNoteTextID(String currentUserName, int noteTextID) {
+    public ServiceResponseT<Collection<String>> getUserEmailListByNoteTextID(String currentUserName, int noteTextID) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var note = noteList.stream().filter(n -> n.getNoteText().getId() == noteTextID).findFirst().get();
@@ -101,14 +101,14 @@ public class NotesService {
         return new ServiceResponseT<>(userEmails.collect(Collectors.toList()));
     }
 
-    public ServiceResponseT<List<NoteDto>> GetAllNotes(String currentUserName) {
+    public ServiceResponseT<List<NoteDto>> getAllNotes(String currentUserName) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         var noteDto = noteList.stream().map(n -> noteMapper.noteToNoteDto(n));
         return new ServiceResponseT<>(noteDto.collect(Collectors.toList()));
     }
 
-    public ServiceResponseT<List<NoteOrderDto>> UpdateOrderNotes(String currentUserName, List<NoteOrderDto> notesOrder) {
+    public ServiceResponseT<List<NoteOrderDto>> updateOrderNotes(String currentUserName, List<NoteOrderDto> notesOrder) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
         noteList.stream().parallel().forEach(n -> {

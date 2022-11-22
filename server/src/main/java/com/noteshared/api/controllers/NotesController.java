@@ -20,14 +20,14 @@ public class NotesController extends BaseController{
     @RequestMapping(method = RequestMethod.GET)
     public List<NoteDto> Get()
     {
-        var result = notesService.GetAllNotes(getCurrentUserName());
+        var result = notesService.getAllNotes(getCurrentUserName());
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-order")
     public List<NoteOrderDto> UpdateOrder(@RequestBody List<NoteOrderDto> notesOrder)
     {
-        var result = notesService.UpdateOrderNotes(getCurrentUserName(), notesOrder);
+        var result = notesService.updateOrderNotes(getCurrentUserName(), notesOrder);
         return ResultOf(result);
     }
 }

@@ -1,1 +1,1 @@
-package com.noteshared.models.DTO;import com.fasterxml.jackson.annotation.JsonProperty;public class DeclinedRequestSharedNoteNotificationContent{    @JsonProperty("fromUserEmail")    private String FromUserEmail;    @JsonProperty("noteTextID")    public int NoteTextID;}
+package com.noteshared.models.DTO;import com.fasterxml.jackson.annotation.JsonProperty;import lombok.Data;@Datapublic class DeclinedRequestSharedNoteNotificationContent{    private String fromUserEmail;    public int noteTextID;}

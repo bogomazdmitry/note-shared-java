@@ -35,5 +35,10 @@ public class User implements Serializable {
     @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Notification> notifications = new ArrayList<>();
+
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Note> notes = new ArrayList<>();
 }
