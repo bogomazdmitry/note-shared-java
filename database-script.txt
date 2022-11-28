@@ -18,7 +18,7 @@ CREATE TABLE note_history
 CREATE TABLE note
 (
     id              INT AUTO_INCREMENT NOT NULL,
-    `order`         INT                NULL,
+    note_order         INT                NULL,
     note_text_id    INT                NULL,
     note_design_id  INT                NULL,
     note_history_id INT                NULL,
