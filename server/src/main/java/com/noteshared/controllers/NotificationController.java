@@ -1,4 +1,4 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.DTO.NotificationDto;
 import com.noteshared.services.NotificationsService;
@@ -23,9 +23,9 @@ public class NotificationController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "delete-notification")
-    public void DeleteNotification(int notificationID)
+    public String DeleteNotification(int notificationID)
     {
         var result = notificationsService.deleteNotification(getCurrentUserName(), notificationID);
-        ResultOf(result);
+        return ResultOf(result);
     }
 }

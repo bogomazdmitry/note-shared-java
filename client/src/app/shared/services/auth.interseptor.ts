@@ -18,6 +18,7 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    console.log('sadasd');
     request = request.clone({
       setHeaders: {
         /* eslint-disable */

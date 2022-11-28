@@ -1,22 +1,23 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.models.DTO.NoteTextDto;
 import com.noteshared.services.NotesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/note")
+@Slf4j
 public class NoteController extends BaseController{
     private final NotesService notesService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @RequestMapping(method = RequestMethod.GET)
     public NoteDto Get(int noteID)
@@ -35,8 +36,8 @@ public class NoteController extends BaseController{
         return ResultOf(result);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public void Delete(int noteID)
+    @RequestMapping(method = RequestMethod.POST, value="delete-note")
+    public void Delete(@RequestBody int noteID)
     {
         var result = notesService.deleteNote(getCurrentUserName(), noteID);
         ResultOf(result);
@@ -54,6 +55,13 @@ public class NoteController extends BaseController{
     {
         var result = notesService.updateNoteDesign(getCurrentUserName(), updateNoteDesignDto);
         return ResultOf(result);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "update-note-text")
+    public void UpdateNoteText(@RequestBody NoteTextDto noteDtoText) {
+        messagingTemplate.convertAndSendToUser(
+                getCurrentUserName(),"update-note-text",
+                noteDtoText);
     }
 
     @RequestMapping(method = RequestMethod.GET, value="shared-users-emails")

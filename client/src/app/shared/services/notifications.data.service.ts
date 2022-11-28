@@ -18,6 +18,6 @@ export class NotificationsDataService extends BaseDataService {
   }
 
   public deleteNotification(notificationID: number) {
-    return this.sendDeleteRequest({notificationID}, actionRoutes.notificationDelete);
+    return this.sendPostRequest(notificationID, actionRoutes.notificationDelete);
   }
 }

@@ -17,26 +17,26 @@ export class NotificationsSignalRService {
       accessTokenFactory: () => this.authService.getAccessToken() ?? '',
     };
 
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(environment.serverUrl + hubsRoutes.notifications, options)
-      .withAutomaticReconnect()
-      .build();
+    // this.hubConnection = new signalR.HubConnectionBuilder()
+    //   .withUrl(environment.serverUrl + hubsRoutes.notifications, options)
+    //   .withAutomaticReconnect()
+    //   .build();
 
-    this.hubConnection
-      .start()
-      .then(() => console.log('Connected to notification hub'))
-      .catch((error) => console.log('No connection to hub ' + error));
+    // this.hubConnection
+    //   .start()
+    //   .then(() => console.log('Connected to notification hub'))
+    //   .catch((error) => console.log('No connection to hub ' + error));
   }
 
   public connectToNewNotifications(): BehaviorSubject<NotificationInfo | null> {
     const notificationBehaviorSubject = new BehaviorSubject<NotificationInfo | null>(null);
-    this.hubConnection.on(hubMethodSubscription.sendNewNotification, (data) => {
-      notificationBehaviorSubject.next(data);
-    });
+    // this.hubConnection.on(hubMethodSubscription.sendNewNotification, (data) => {
+    //   notificationBehaviorSubject.next(data);
+    // });
     return notificationBehaviorSubject;
   }
 
   public disconnectToUpdateNote(): void {
-    this.hubConnection.off(hubMethodSubscription.sendNewNotification);
+    // this.hubConnection.off(hubMethodSubscription.sendNewNotification);
   }
 }

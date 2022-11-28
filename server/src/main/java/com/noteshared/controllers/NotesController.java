@@ -1,4 +1,4 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.models.DTO.NoteOrderDto;

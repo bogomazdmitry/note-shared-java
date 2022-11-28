@@ -26,6 +26,6 @@ public class NoteText {
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "noteText", cascade = CascadeType.ALL)
     private List<Note> notes;
 }

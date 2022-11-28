@@ -1,7 +1,7 @@
 <mat-card
   class="text-break"
-  (mousedown)="onMouseDown($event)"
-  (mouseup)="onMouseUp($event)"
+  (pointerdown)="onMouseDown($event)"
+  (pointerup)="onMouseUp($event)"
   (click)="openDialog($event)"
   [ngStyle]="{ 'background-color': note.hexColor  }"
 >

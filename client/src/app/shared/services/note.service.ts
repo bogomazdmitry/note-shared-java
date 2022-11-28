@@ -36,6 +36,12 @@ export class NoteService implements OnDestroy {
 
     this.noteSignalR.startConnection();
 
+    this.updateNoteText({
+      text: 'sdasd',
+      id: 1,
+      title: 'sadsad'
+    }).subscribe();
+    console.log('ghhello');
     this.noteSignalR
       .connectToUpdateNotes()
       .subscribe((updatedNoteText: NoteText | null) => {
@@ -45,14 +51,14 @@ export class NoteService implements OnDestroy {
         }
       });
 
-    this.noteSignalR
-     .connectToDeleteNoteFromOwner()
-      .subscribe((idDeleteNote) => {
-        if(idDeleteNote) {
-          console.log(this.notes);
-          this.notes = this.notes.filter((note) => note.id !== idDeleteNote);
-        }
-      });
+    // this.noteSignalR
+    //  .connectToDeleteNoteFromOwner()
+    //   .subscribe((idDeleteNote) => {
+    //     if(idDeleteNote) {
+    //       console.log(this.notes);
+    //       this.notes = this.notes.filter((note) => note.id !== idDeleteNote);
+    //     }
+    //   });
   }
 
   public ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.requests.ChangeUserInfoRequest;
 import com.noteshared.models.responses.UserInfoResponse;

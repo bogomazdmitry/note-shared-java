@@ -8,7 +8,7 @@ export const actionRoutes = {
   noteUpdate: 'update-note',
   noteDesignUpdate: 'update-note-design',
   noteCreate: '',
-  noteDelete: '',
+  noteDelete: 'delete-note',
   notesGet: '',
   notesSharedUsersEmails: 'shared-users-emails',
   notesAddSharedUser: 'add-shared-user',
@@ -58,3 +58,5 @@ export const authTokenRequestValues = {
   password: 'password',
   scope: 'IdentityServerApi openid',
 };
+
+export const socketPrefix = '/ws';

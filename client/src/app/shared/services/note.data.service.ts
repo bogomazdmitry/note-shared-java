@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { actionRoutes, controllerRoutes } from '../constants/url.constants';
 import { NoteDesign } from '../models/note-design.model';
+import { NoteText } from '../models/note-text.model';
 import { Note } from '../models/note.model';
 import { BaseDataService } from './base.data.service';
 
@@ -16,8 +17,12 @@ export class NoteDataService extends BaseDataService {
     return this.sendPostRequest(JSON.stringify(note), actionRoutes.noteUpdate);
   }
 
+  public updateNoteText(noteText: NoteText): Observable<NoteText> {
+    return this.sendPostRequest(JSON.stringify(noteText), actionRoutes.noteTextUpdate);
+  }
+
   public deleteNote(noteID: number): Observable<any> {
-    return this.sendDeleteRequest({ noteID }, actionRoutes.noteDelete);
+    return this.sendPostRequest(noteID, actionRoutes.noteDelete);
   }
 
   public createNote(order: number): Observable<Note> {

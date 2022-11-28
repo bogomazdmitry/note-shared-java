@@ -1,11 +1,10 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.requests.SignInUserRequest;
 import com.noteshared.models.requests.SignUpUserRequest;
 import com.noteshared.models.responses.SignInResponse;
 import com.noteshared.services.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -28,14 +27,14 @@ public class AuthController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value="check-unique-email")
-    public void checkUniqueEmail(String email) {
+    public String checkUniqueEmail(@RequestParam String email) {
         var result = authService.checkUniqueEmail(email);
-        ResultOf(result);
+        return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.GET, value="check-unique-user-name")
-    public void checkUniqueUserName(@RequestParam String userName) {
+    public String checkUniqueUserName(@RequestParam String userName) {
         var result = authService.checkUniqueUserName(userName);
-        ResultOf(result);
+        return ResultOf(result);
     }
 }

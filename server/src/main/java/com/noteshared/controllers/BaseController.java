@@ -1,4 +1,4 @@
-package com.noteshared.api.controllers;
+package com.noteshared.controllers;
 
 import com.noteshared.models.responses.ServiceResponse;
 import com.noteshared.models.responses.ServiceResponseT;
@@ -24,11 +24,12 @@ public class BaseController {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, answer.getError());
     }
 
-    protected void ResultOf(ServiceResponse answer)
+    protected String ResultOf(ServiceResponse answer)
     {
         if (!answer.isSuccess())
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, answer.getError());
         }
+        return "OK";
     }
 }

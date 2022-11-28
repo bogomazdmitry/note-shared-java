@@ -22,26 +22,27 @@ public class Note implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "note_order")
     private Integer order;
 
     @ToString.Exclude
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private NoteText noteText;
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private NoteDesign noteDesign;
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private NoteHistory noteHistory;
 
     @ToString.Exclude
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
 
