@@ -4,6 +4,7 @@ import com.noteshared.domain.entities.notedesigns.NoteDesignRepository;
 import com.noteshared.domain.entities.notes.Note;
 import com.noteshared.domain.entities.notes.NoteRepository;
 import com.noteshared.domain.entities.notes.UserRoleForNote;
+import com.noteshared.domain.entities.notetexts.NoteTextRepository;
 import com.noteshared.domain.entities.users.UserRepository;
 import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class NotesService {
     private final NoteRepository noteRepository;
     private final NoteDesignRepository noteDesignRepository;
+    private final NoteTextRepository noteTextRepository;
     private final UserRepository userRepository;
     private final NoteMapper noteMapper;
 
@@ -109,7 +111,8 @@ public class NotesService {
         if(note == null) {
             return new ServiceResponseT<>("Not allowed");
         }
-        var userEmails = note.getNoteText().getNotes().stream().map(n -> n.getUser().getEmail());
+        var noteText = noteTextRepository.findById(note.getNoteText().getId()).get();
+        var userEmails = noteRepository.findAllByNoteText(noteText).get().stream().map(n -> n.getUser().getEmail());
         return new ServiceResponseT<>(userEmails.collect(Collectors.toList()));
     }
 

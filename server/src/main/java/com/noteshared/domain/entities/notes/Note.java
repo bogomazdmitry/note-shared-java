@@ -27,7 +27,7 @@ public class Note implements Serializable {
 
     @ToString.Exclude
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private NoteText noteText;
 
     @ToString.Exclude

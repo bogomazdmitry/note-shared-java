@@ -1,54 +1,59 @@
-import { Note } from 'src/app/shared/models/note.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, of } from 'rxjs';
 import { actionRoutes, hubMethodSubscription, hubsRoutes, socketPrefix } from './../constants/url.constants';
 import { Injectable } from '@angular/core';
 import { NoteText } from '../models/note-text.model';
 import { NoteDataService } from './note.data.service';
 import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NoteSignalRService {
   private socket: WebSocket;
-  private stompClient: any;
+  private stompClient: Stomp.Client;
   private observableUpdateNoteText: BehaviorSubject<NoteText | null>;
+  private observableShareNoteWithUser: BehaviorSubject<number | null>;
+  private header: {
+    /* eslint-disable */
+    Authorization: string;
+  };
 
   public constructor(
     private readonly noteDataService: NoteDataService,
-    private readonly authService: AuthService) {}
+    private readonly authService: AuthService) {
+      this.observableUpdateNoteText = new BehaviorSubject<NoteText | null>(null);
+      this.observableShareNoteWithUser = new BehaviorSubject<number | null>(null);
+    }
 
   public startConnection(): void {
-    // const options: signalR.IHttpConnectionOptions = {
-    //   accessTokenFactory: () => this.authService.getAccessToken() ?? '',
-    // };
-    this.socket = new SockJS(environment.serverUrl + socketPrefix, null,
-      {
-          transports: ['xhr-streaming'],
-          headers: {'Authorization': 'Bearer ' + this.authService.getAccessToken()}
-      });
+    this.header = {
+      /* eslint-disable */
+      Authorization: `Bearer ${this.authService.getAccessToken()}`
+      /* eslint-enable */
+    };
+    this.socket = new WebSocket(environment.serverUrlUs + socketPrefix + '?token=' + this.authService.getAccessToken());
     this.stompClient = Stomp.over(this.socket);
     this.stompClient.connect({},() =>
     {
-      console.log('in socket');
-      this.stompClient.subscribe('/update-note-text',(data: any)=>{console.log(data);});
+      this.stompClient.subscribe(hubMethodSubscription.noteTextUpdate,
+        (data: any)=>{console.error (data); this.observableUpdateNoteText.next(JSON.parse(data.body));});
+      this.stompClient.subscribe(hubMethodSubscription.deleteNoteFromOwner,
+        (data: any)=>{console.error (data); this.observableUpdateNoteText.next(JSON.parse(data.body));});
     });
-    this.observableUpdateNoteText = new BehaviorSubject<NoteText | null>(null);
-
   }
 
   public updateNoteText(noteText: NoteText): Observable<NoteText> {
-    return this.noteDataService.updateNoteText(noteText);
+    this.noteDataService.updateNoteText(noteText).subscribe();
+    return of(noteText);
   }
 
   public shareNoteWithUser(email: string, noteTextID: number): Observable<any> {
-    // return this.hubConnectionRequestSharedNote.sen(actionRoutes.requestSharedNote, { email, noteTextID }));
-    return new Observable<NoteText>();
+    // this.stompClient.send(socketActionUrl.deleteNoteFromOwner, this.header, JSON.stringify({email, noteTextID}));
+    return new Observable<any>();
   }
 
   public connectToDeleteNoteFromOwner(): BehaviorSubject<number | null> {
-    return new BehaviorSubject<number | null>(null);
+    return this.observableShareNoteWithUser;
   }
 
 
@@ -56,26 +61,25 @@ export class NoteSignalRService {
    return this.observableUpdateNoteText;
   }
 
-  public disconnectToUpdateNote(): void {
-    // this.hubConnectionUpdateNoteText.off(hubMethodSubscription.noteTextUpdate);
-  }
-
-  public disconnectToDeleteNoteFromOwner(): void {
-    // this.hubConnectionUpdateNoteText.off(hubMethodSubscription.deleteNoteFromOwner);
+  public disconnect(): void {
+    console.log('disconnected');
+    this.stompClient.unsubscribe(hubMethodSubscription.noteTextUpdate);
+    this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
+    this.stompClient.disconnect(()=>{});
   }
 
   public deleteSharedUser(email: string, noteTextID: number): Observable<any> {
-    return new Observable<NoteText>();
-    // return from(this.hubConnectionUpdateNoteText.invoke(actionRoutes.notesDeleteSharedUser, {email, noteTextID}));
+    // this.stompClient.send(socketActionUrl.notesDeleteSharedUser, this.header, JSON.stringify({email, noteTextID}));
+    return new Observable<any>();
   }
 
   public declineSharedNote(noteTextID: number, notificationID: number): Observable<any> {
-    return new Observable<NoteText>();
-    // return from(this.hubConnectionUpdateNoteText.invoke(actionRoutes.declineSharedNote, noteTextID, notificationID));
+    // this.stompClient.send(socketActionUrl.declineSharedNote, this.header, JSON.stringify({noteTextID, notificationID}));
+    return new Observable<any>();
   }
 
   public acceptSharedNote(noteTextID: number, notificationID: number): Observable<any> {
-    return new Observable<NoteText>();
-    // return from(this.hubConnectionUpdateNoteText.invoke(actionRoutes.acceptSharedNote, noteTextID, notificationID));
+    // this.stompClient.send(socketActionUrl.acceptSharedNote, this.header, JSON.stringify({noteTextID, notificationID}));
+    return new Observable<any>();
   }
 }

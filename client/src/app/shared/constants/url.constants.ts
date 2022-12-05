@@ -12,25 +12,28 @@ export const actionRoutes = {
   notesGet: '',
   notesSharedUsersEmails: 'shared-users-emails',
   notesAddSharedUser: 'add-shared-user',
-  notesDeleteSharedUser: 'delete-shared-user',
   notesUpdateOrder: 'update-order',
   noteTextUpdate: 'update-note-text',
 
   authCheckUniqueUserName: 'check-unique-user-name',
   authCheckUniqueEmail: 'check-unique-email',
 
-  declineSharedNote: 'decline-shared-note',
-  acceptSharedNote: 'accept-shared-note',
-  requestSharedNote: 'share-note-with-user',
 
   notificationDelete: 'delete-notification',
   notificationsGet: '',
+
+  notesDeleteSharedUser: 'delete-shared-user',
+  declineSharedNote: 'decline-shared-note',
+  acceptSharedNote: 'accept-shared-note',
+  requestSharedNote: 'share-note-with-user',
+  deleteNoteFromOwner: 'delete-note-from-owner',
 };
 
 export const hubMethodSubscription = {
-  deleteNoteFromOwner: 'delete-note-from-owner',
-  noteTextUpdate: 'update-note-text',
-  sendNewNotification: 'send-new-notification',
+  deleteNoteFromOwner: '/user/delete-note-from-owner',
+  noteTextUpdate: '/user/update-note-text',
+  sendNewNotification: '/user/send-new-notification',
+
 };
 
 export const hubsRoutes = {

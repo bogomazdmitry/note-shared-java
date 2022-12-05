@@ -6,6 +6,7 @@ import com.noteshared.models.DTO.NoteTextDto;
 import com.noteshared.services.NotesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,17 +58,27 @@ public class NoteController extends BaseController{
         return ResultOf(result);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "update-note-text")
-    public void UpdateNoteText(@RequestBody NoteTextDto noteDtoText) {
-        messagingTemplate.convertAndSendToUser(
-                getCurrentUserName(),"update-note-text",
-                noteDtoText);
-    }
-
     @RequestMapping(method = RequestMethod.GET, value="shared-users-emails")
     public Collection<String> GetSharedUserEmails(int noteTextID)
     {
         var result = notesService.getUserEmailListByNoteTextID(getCurrentUserName(), noteTextID);
         return ResultOf(result);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="update-note-text")
+    public NoteTextDto UpdateNoteText(@RequestBody NoteTextDto noteTextDto) {
+        var resultUpdate = notesService.updateNoteText(getCurrentUserName(), noteTextDto);
+        if(!resultUpdate.isSuccess()) {
+            return ResultOf(resultUpdate);
+        }
+        var resultEmails = notesService.getUserEmailListByNoteTextID(getCurrentUserName(), noteTextDto.getId());
+        if(resultEmails.isSuccess()) {
+            for (var userEmail : resultEmails.getModelRequest()) {
+                messagingTemplate.convertAndSendToUser(
+                        userEmail, "/update-note-text",
+                        resultUpdate.getModelRequest());
+            }
+        }
+        return ResultOf(resultUpdate);
     }
 }

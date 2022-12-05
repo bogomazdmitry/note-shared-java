@@ -20,6 +20,7 @@ export class GlobalErrorInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    console.log(JSON.stringify(request));
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse): Observable<HttpEvent<any>> => {
         if (error.status >= 500 || !error.status) {

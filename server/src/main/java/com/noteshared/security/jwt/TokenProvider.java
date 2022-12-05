@@ -20,6 +20,7 @@ import java.util.Date;
 public class TokenProvider {
     private static final String PREFIX = "Bearer ";
     private static final String HEADER = "Authorization";
+    private static final String PARAMETER = "token";
     private String keyword;
     private long validityMilliseconds;
 
@@ -55,6 +56,10 @@ public class TokenProvider {
         String requestToken = request.getHeader(HEADER);
         if (requestToken != null && requestToken.startsWith(PREFIX)) {
             return requestToken.substring(PREFIX.length(), requestToken.length());
+        }
+        requestToken = request.getParameter(PARAMETER);
+        if (requestToken != null) {
+            return requestToken;
         }
         return null;
     }

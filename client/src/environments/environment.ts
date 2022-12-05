@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   serverUrl: 'http://localhost:8080',
+  serverUrlUs: 'ws://localhost:8080',
   clientId: 'angular-app',
 };
 
