@@ -4,7 +4,7 @@ import { BaseNotification } from 'src/app/notifications/base-notification/base-n
 import { MenuNotificationDirective } from 'src/app/notifications/menu-notification.directive';
 import { NotificationInfo } from '../models/notification-info.model';
 import { converter } from '../models/notification-type.model';
-import { NotificationsSignalRService } from './notifications.signalr.service';
+import { NotificationsSocketService } from './notifications.socket.service';
 import { NotificationsDataService } from './notifications.data.service';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class NotificationsService implements OnDestroy {
   public constructor(
     private readonly notificationsDataService: NotificationsDataService,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
-    private readonly notificationSignalR: NotificationsSignalRService,
+    private readonly notificationSignalR: NotificationsSocketService,
   ) {
     this.notificationsDataService.getNotifications().subscribe(
       (notifications: NotificationInfo[]) => {

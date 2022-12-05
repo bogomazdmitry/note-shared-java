@@ -38,10 +38,6 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    private final TokenProvider provider;
-    private static final String PREFIX = "Bearer ";
-    private static final String HEADER = "Authorization";
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker( "/");

@@ -1,5 +1,5 @@
 import { ThemeService } from './theme.service';
-import { NoteSignalRService } from 'src/app/shared/services/note.signalr.service';
+import { NoteSocketService } from 'src/app/shared/services/note.socket.service';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Note } from '../models/note.model';
@@ -17,7 +17,7 @@ export class NoteService implements OnDestroy {
   public constructor(
     private readonly noteDataService: NoteDataService,
     private readonly notesDataService: NotesDataService,
-    private readonly noteSignalR: NoteSignalRService,
+    private readonly noteSignalR: NoteSocketService,
     private readonly themeService: ThemeService,
     private readonly colorPaletteService: ColorPaletteService
   ) {

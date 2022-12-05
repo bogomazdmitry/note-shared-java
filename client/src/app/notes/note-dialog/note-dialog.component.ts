@@ -92,7 +92,6 @@ export class NoteDialogComponent implements OnInit {
   }
 
   public addUser($event: MatChipInputEvent): void {
-    console.log(this.note.noteText.id);
     this.noteService
       .shareNoteWithUser($event.value, this.note.noteText.id)
       .subscribe((result) => {

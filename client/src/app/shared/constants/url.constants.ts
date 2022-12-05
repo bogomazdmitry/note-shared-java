@@ -32,7 +32,6 @@ export const hubMethodSubscription = {
   deleteNoteFromOwner: '/user/delete-note-from-owner',
   noteTextUpdate: '/user/update-note-text',
   sendNewNotification: '/user/send-new-notification',
-  sendNewNotificationKek: '/send-new-notification',
 };
 
 export const hubsRoutes = {

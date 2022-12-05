@@ -2,12 +2,11 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { hubMethodSubscription, socketPrefix } from '../constants/url.constants';
 import { Injectable } from '@angular/core';
-import { NotificationInfo } from '../models/notification-info.model';
 import * as Stomp from 'stompjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class NotificationsSignalRService {
+export class NotificationsSocketService {
   private socket: WebSocket;
   private stompClient: Stomp.Client;
   private header: {
@@ -26,13 +25,13 @@ export class NotificationsSignalRService {
       Authorization: `Bearer ${this.authService.getAccessToken()}`
       /* eslint-enable */
     };
-    // this.socket = new WebSocket(environment.serverUrlUs + socketPrefix + '?token=' + this.authService.getAccessToken());
-    // this.stompClient = Stomp.over(this.socket);
-    // this.stompClient.connect({},() =>
-    // {
-    //   this.stompClient.subscribe(hubMethodSubscription.sendNewNotification,
-    //     (data: any)=>{console.error (data); this.notificationBehaviorSubject.next(JSON.parse(data.body));});
-    //   });
+    this.socket = new WebSocket(environment.serverUrlUs + socketPrefix + '?token=' + this.authService.getAccessToken());
+    this.stompClient = Stomp.over(this.socket);
+    this.stompClient.connect({},() =>
+    {
+      this.stompClient.subscribe(hubMethodSubscription.sendNewNotification,
+        (data: any)=>{console.error (data); this.notificationBehaviorSubject.next(JSON.parse(data.body));});
+      });
   }
 
   public connectToNewNotifications(): BehaviorSubject<any> {

@@ -1,6 +1,6 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { hubMethodSubscription, socketPrefix } from './../constants/url.constants';
+import { hubMethodSubscription, socketPrefix } from '../constants/url.constants';
 import { Injectable } from '@angular/core';
 import { NoteText } from '../models/note-text.model';
 import { NoteDataService } from './note.data.service';
@@ -8,7 +8,7 @@ import * as Stomp from 'stompjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class NoteSignalRService {
+export class NoteSocketService {
   private socket: WebSocket;
   private stompClient: Stomp.Client;
   private observableUpdateNoteText: BehaviorSubject<NoteText | null>;
@@ -35,11 +35,9 @@ export class NoteSignalRService {
     this.stompClient = Stomp.over(this.socket);
     this.stompClient.connect({}, () => {
       this.stompClient.subscribe(hubMethodSubscription.noteTextUpdate,
-        (data: any) => { console.error(data); this.observableUpdateNoteText.next(JSON.parse(data.body)); });
+        (data: any) => { this.observableUpdateNoteText.next(JSON.parse(data.body)); });
       this.stompClient.subscribe(hubMethodSubscription.deleteNoteFromOwner,
-        (data: any) => { console.error(data); this.observableDeleteNoteFromOwner.next(JSON.parse(data.body)); });
-      this.stompClient.subscribe(hubMethodSubscription.sendNewNotificationKek,
-        (data: any) => { console.error(data); });
+        (data: any) => { this.observableDeleteNoteFromOwner.next(JSON.parse(data.body)); });
     });
   }
 
