@@ -1,42 +1,46 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { BehaviorSubject } from 'rxjs';
-import { hubMethodSubscription, hubsRoutes } from '../constants/url.constants';
+import { hubMethodSubscription, socketPrefix } from '../constants/url.constants';
 import { Injectable } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
-import { environment } from 'src/environments/environment';
 import { NotificationInfo } from '../models/notification-info.model';
+import * as Stomp from 'stompjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationsSignalRService {
-  private hubConnection: signalR.HubConnection;
+  private socket: WebSocket;
+  private stompClient: Stomp.Client;
+  private header: {
+    /* eslint-disable */
+    Authorization: string;
+  };
+  private notificationBehaviorSubject: BehaviorSubject<any>;
 
-  public constructor(private readonly authService: AuthService) {}
-
-  public startConnection(): void {
-    const options: signalR.IHttpConnectionOptions = {
-      accessTokenFactory: () => this.authService.getAccessToken() ?? '',
-    };
-
-    // this.hubConnection = new signalR.HubConnectionBuilder()
-    //   .withUrl(environment.serverUrl + hubsRoutes.notifications, options)
-    //   .withAutomaticReconnect()
-    //   .build();
-
-    // this.hubConnection
-    //   .start()
-    //   .then(() => console.log('Connected to notification hub'))
-    //   .catch((error) => console.log('No connection to hub ' + error));
+  public constructor(private readonly authService: AuthService) {
+    this.notificationBehaviorSubject = new BehaviorSubject<any>(null);
   }
 
-  public connectToNewNotifications(): BehaviorSubject<NotificationInfo | null> {
-    const notificationBehaviorSubject = new BehaviorSubject<NotificationInfo | null>(null);
-    // this.hubConnection.on(hubMethodSubscription.sendNewNotification, (data) => {
-    //   notificationBehaviorSubject.next(data);
-    // });
-    return notificationBehaviorSubject;
+  public startConnection(): void {
+    this.header = {
+      /* eslint-disable */
+      Authorization: `Bearer ${this.authService.getAccessToken()}`
+      /* eslint-enable */
+    };
+    // this.socket = new WebSocket(environment.serverUrlUs + socketPrefix + '?token=' + this.authService.getAccessToken());
+    // this.stompClient = Stomp.over(this.socket);
+    // this.stompClient.connect({},() =>
+    // {
+    //   this.stompClient.subscribe(hubMethodSubscription.sendNewNotification,
+    //     (data: any)=>{console.error (data); this.notificationBehaviorSubject.next(JSON.parse(data.body));});
+    //   });
+  }
+
+  public connectToNewNotifications(): BehaviorSubject<any> {
+    return this.notificationBehaviorSubject;
   }
 
   public disconnectToUpdateNote(): void {
-    // this.hubConnection.off(hubMethodSubscription.sendNewNotification);
+    this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
+    this.stompClient.disconnect(()=>{});
   }
 }

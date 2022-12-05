@@ -20,7 +20,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         var result = principal.getName();
 
-        LOG.info("User with email '{}' opened the page", result);
+        LOG.info("User with user name '{}' opened the page", result);
 
         return new UserPrincipal(result);
     }

@@ -16,6 +16,7 @@ import com.noteshared.models.responses.ServiceResponseT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ public class NotificationsService {
         return new ServiceResponseT<>(notificationDtoList);
     }
 
+    @Transactional
     public ServiceResponse deleteNotification(String currentUserName, int notificationID) {
         var user = userRepository.findByUserName(currentUserName).get();
 
@@ -91,7 +93,7 @@ public class NotificationsService {
         notification = notificationRepositoty.save(notification);
 
         var notificationDto = notificationMapper.notificationToNotificationDto(notification);
-        return new ServiceResponseT<NotificationDto>(notificationDto);
+        return new ServiceResponseT<>(notificationDto);
     }
 
     public ServiceResponseT<NotificationDto> SendDeclineRequestSharedNotification(String currentUserName, String ownerUserName, int noteTextID) throws JsonProcessingException {

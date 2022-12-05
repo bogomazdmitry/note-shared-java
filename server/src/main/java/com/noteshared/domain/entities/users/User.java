@@ -34,11 +34,11 @@ public class User implements Serializable {
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Notification> notifications = new ArrayList<>();
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Note> notes = new ArrayList<>();
 }

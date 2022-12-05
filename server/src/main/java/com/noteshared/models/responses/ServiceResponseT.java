@@ -19,7 +19,19 @@ public class ServiceResponseT<TModel>
         success = true;
     }
 
+    public ServiceResponseT(TModel modelRequest, boolean isString)
+    {
+        this.modelRequest = modelRequest;
+        success = true;
+    }
+
     public ServiceResponseT(ServiceResponse answerRequest)
+    {
+        error = answerRequest.getError();
+        success = answerRequest.isSuccess();
+    }
+
+    public <U> ServiceResponseT(ServiceResponseT<U> answerRequest)
     {
         error = answerRequest.getError();
         success = answerRequest.isSuccess();

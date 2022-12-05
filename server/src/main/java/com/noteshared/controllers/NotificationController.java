@@ -3,9 +3,7 @@ package com.noteshared.controllers;
 import com.noteshared.models.DTO.NotificationDto;
 import com.noteshared.services.NotificationsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,10 +20,10 @@ public class NotificationController extends BaseController {
         return ResultOf(result);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "delete-notification")
-    public String DeleteNotification(int notificationID)
+    @RequestMapping(method = RequestMethod.POST, value = "delete-notification")
+    public void DeleteNotification(@RequestBody int notificationID)
     {
         var result = notificationsService.deleteNotification(getCurrentUserName(), notificationID);
-        return ResultOf(result);
+        ResultOf(result);
     }
 }

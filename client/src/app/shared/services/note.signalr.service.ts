@@ -1,6 +1,6 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Observable, BehaviorSubject, Subject, of } from 'rxjs';
-import { actionRoutes, hubMethodSubscription, hubsRoutes, socketPrefix } from './../constants/url.constants';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { hubMethodSubscription, socketPrefix } from './../constants/url.constants';
 import { Injectable } from '@angular/core';
 import { NoteText } from '../models/note-text.model';
 import { NoteDataService } from './note.data.service';
@@ -12,7 +12,7 @@ export class NoteSignalRService {
   private socket: WebSocket;
   private stompClient: Stomp.Client;
   private observableUpdateNoteText: BehaviorSubject<NoteText | null>;
-  private observableShareNoteWithUser: BehaviorSubject<number | null>;
+  private observableDeleteNoteFromOwner: BehaviorSubject<number | null>;
   private header: {
     /* eslint-disable */
     Authorization: string;
@@ -21,9 +21,9 @@ export class NoteSignalRService {
   public constructor(
     private readonly noteDataService: NoteDataService,
     private readonly authService: AuthService) {
-      this.observableUpdateNoteText = new BehaviorSubject<NoteText | null>(null);
-      this.observableShareNoteWithUser = new BehaviorSubject<number | null>(null);
-    }
+    this.observableUpdateNoteText = new BehaviorSubject<NoteText | null>(null);
+    this.observableDeleteNoteFromOwner = new BehaviorSubject<number | null>(null);
+  }
 
   public startConnection(): void {
     this.header = {
@@ -33,12 +33,13 @@ export class NoteSignalRService {
     };
     this.socket = new WebSocket(environment.serverUrlUs + socketPrefix + '?token=' + this.authService.getAccessToken());
     this.stompClient = Stomp.over(this.socket);
-    this.stompClient.connect({},() =>
-    {
+    this.stompClient.connect({}, () => {
       this.stompClient.subscribe(hubMethodSubscription.noteTextUpdate,
-        (data: any)=>{console.error (data); this.observableUpdateNoteText.next(JSON.parse(data.body));});
+        (data: any) => { console.error(data); this.observableUpdateNoteText.next(JSON.parse(data.body)); });
       this.stompClient.subscribe(hubMethodSubscription.deleteNoteFromOwner,
-        (data: any)=>{console.error (data); this.observableUpdateNoteText.next(JSON.parse(data.body));});
+        (data: any) => { console.error(data); this.observableDeleteNoteFromOwner.next(JSON.parse(data.body)); });
+      this.stompClient.subscribe(hubMethodSubscription.sendNewNotificationKek,
+        (data: any) => { console.error(data); });
     });
   }
 
@@ -47,36 +48,34 @@ export class NoteSignalRService {
   }
 
   public shareNoteWithUser(email: string, noteTextID: number): Observable<any> {
-    return new Observable<any>();
+    return this.noteDataService.shareNoteWithUser(email, noteTextID);
   }
 
   public connectToDeleteNoteFromOwner(): BehaviorSubject<number | null> {
-    return this.observableShareNoteWithUser;
+    return this.observableDeleteNoteFromOwner;
   }
 
 
   public connectToUpdateNotes(): BehaviorSubject<NoteText | null> {
-   return this.observableUpdateNoteText;
+    return this.observableUpdateNoteText;
   }
 
   public disconnect(): void {
     this.stompClient.unsubscribe(hubMethodSubscription.noteTextUpdate);
     this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
-    this.stompClient.disconnect(()=>{});
+    this.stompClient.disconnect(() => { });
+    this.socket.close();
   }
 
   public deleteSharedUser(email: string, noteTextID: number): Observable<any> {
-    // this.stompClient.send(socketActionUrl.notesDeleteSharedUser, this.header, JSON.stringify({email, noteTextID}));
-    return new Observable<any>();
+    return this.noteDataService.deleteSharedUser(email, noteTextID);
   }
 
   public declineSharedNote(noteTextID: number, notificationID: number): Observable<any> {
-    // this.stompClient.send(socketActionUrl.declineSharedNote, this.header, JSON.stringify({noteTextID, notificationID}));
-    return new Observable<any>();
+    return this.noteDataService.declineSharedNote(noteTextID, notificationID);
   }
 
   public acceptSharedNote(noteTextID: number, notificationID: number): Observable<any> {
-    // this.stompClient.send(socketActionUrl.acceptSharedNote, this.header, JSON.stringify({noteTextID, notificationID}));
-    return new Observable<any>();
+    return this.noteDataService.acceptSharedNote(noteTextID, notificationID);
   }
 }

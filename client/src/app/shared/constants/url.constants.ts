@@ -11,7 +11,6 @@ export const actionRoutes = {
   noteDelete: 'delete-note',
   notesGet: '',
   notesSharedUsersEmails: 'shared-users-emails',
-  notesAddSharedUser: 'add-shared-user',
   notesUpdateOrder: 'update-order',
   noteTextUpdate: 'update-note-text',
 
@@ -33,7 +32,7 @@ export const hubMethodSubscription = {
   deleteNoteFromOwner: '/user/delete-note-from-owner',
   noteTextUpdate: '/user/update-note-text',
   sendNewNotification: '/user/send-new-notification',
-
+  sendNewNotificationKek: '/send-new-notification',
 };
 
 export const hubsRoutes = {

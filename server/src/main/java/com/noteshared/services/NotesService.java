@@ -5,6 +5,7 @@ import com.noteshared.domain.entities.notes.Note;
 import com.noteshared.domain.entities.notes.NoteRepository;
 import com.noteshared.domain.entities.notes.UserRoleForNote;
 import com.noteshared.domain.entities.notetexts.NoteTextRepository;
+import com.noteshared.domain.entities.users.User;
 import com.noteshared.domain.entities.users.UserRepository;
 import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +35,7 @@ public class NotesService {
     private final NoteTextRepository noteTextRepository;
     private final UserRepository userRepository;
     private final NoteMapper noteMapper;
+    private final NotificationsService notificationsService;
 
     // OK
     public ServiceResponseT<NoteDto> getNote(String currentUserName, int noteID) {
@@ -53,6 +56,7 @@ public class NotesService {
         return new ServiceResponseT<>(newNoteDto);
     }
 
+    @Transactional
     public ServiceResponse deleteNote(String currentUserName, int noteID) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes().stream().filter(n -> n.getId() == noteID);
@@ -60,7 +64,7 @@ public class NotesService {
         if(note == null) {
             return new ServiceResponse("Not allowed");
         }
-        noteRepository.deleteById(note.getId());
+        noteRepository.delete(note);
         return new ServiceResponse();
     }
 
@@ -117,6 +121,20 @@ public class NotesService {
     }
 
     // OK
+    public ServiceResponseT<Collection<String>> getUserNamesListByNoteTextID(String currentUserName, int noteTextID) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteList = user.getNotes();
+        var note = noteList.stream().filter(n ->n.getNoteText() != null &&  n.getNoteText().getId() == noteTextID)
+                .findFirst().get();
+        if(note == null) {
+            return new ServiceResponseT<>("Not allowed");
+        }
+        var noteText = noteTextRepository.findById(note.getNoteText().getId()).get();
+        var userNames = noteRepository.findAllByNoteText(noteText).get().stream().map(n -> n.getUser().getUserName());
+        return new ServiceResponseT<>(userNames.collect(Collectors.toList()));
+    }
+
+    // OK
     public ServiceResponseT<List<NoteDto>> getAllNotes(String currentUserName) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
@@ -166,112 +184,102 @@ public class NotesService {
         return new ServiceResponseT<>(userIdList.collect(Collectors.toList()));
     }
 
+    public ServiceResponse CanAddSharedUser(String currentUserName, String sharedUserEmail, int noteTextID) {
+        var user = userRepository.findByUserName(currentUserName).get();
+        var noteText = noteTextRepository.findById(noteTextID).get();
+        var note = noteRepository.findAllByNoteTextAndAndUser(noteText, user).get().stream().findFirst().get();
+        if (note != null && note.getUserRole() != UserRoleForNote.Owner)
+        {
+            return new ServiceResponse("Don't has access");
+        }
+        var sharedUser = userRepository.findByEmail(sharedUserEmail);
+        if (sharedUser.isEmpty())
+        {
+            return new ServiceResponse("User is not found");
+        }
+        var dnote = noteText.getNotes()
+                .stream().filter(n -> n.getUser().getEmail() == sharedUserEmail)
+                .findAny();
+        if (!dnote.isEmpty())
+        {
+            return new ServiceResponse("Shared user also has access");
+        }
+        return new ServiceResponse();
+    }
 
-//    public async Task<ServiceResponse> CanAddSharedUser(string currentUserID, string sharedUserEmail, int noteTextID)
-//    {
-//        if (!_repositoryNoteTexts.HasAccessForUser(noteTextID, currentUserID))
-//        {
-//            return new ServiceResponse("Not allowed");
-//        }
-//        var note = await _repositoryNotes.GetByAsync(note => note.UserID == currentUserID && note.NoteTextID == noteTextID);
-//
-//        if (note.UserRole != UserRoleForNote.Owner)
-//        {
-//            return new ServiceResponse("Don't has access");
-//        }
-//
-//        var sharedUser = await _repositoryUsers.GetByAsync(el => el.Email == sharedUserEmail);
-//        if (sharedUser == null)
-//        {
-//            return new ServiceResponse("User is not found");
-//        }
-//
-//        var noteText = await _repositoryNoteTexts.GetByAsync(el => el.ID == noteTextID, el => el.Notes);
-//        var douplicateUserAccess = noteText.Notes.Any(note => note.UserID == sharedUser.Id);
-//        if (douplicateUserAccess)
-//        {
-//            return new ServiceResponse("Shared user also has access");
-//        }
-//
-//        return new ServiceResponse();
-//    }
-//
-//    public ServiceResponse DeleteSharedUser(String currentUserName, String sharedUserEmail, int noteTextID)
-//    {
-//        if (!_repositoryNoteTexts.HasAccessForUser(noteTextID, currentUserID))
-//        {
-//            return new ServiceResponse("Not allowed");
-//        }
-//
-//        var note = await _repositoryNotes.GetByAsync(note => note.UserID == currentUserID && note.NoteTextID == noteTextID);
-//        if (note.UserRole != UserRoleForNote.Owner)
-//        {
-//            return new ServiceResponse("Don't has access");
-//        }
-//
-//        var sharedUser = await _repositoryUsers.GetByAsync(user => user.Email == sharedUserEmail);
-//        if (sharedUser == null)
-//        {
-//            return new ServiceResponse();
-//        }
-//
-//        var deleteNote = await _repositoryNotes.GetByAsync(note => note.NoteTextID == noteTextID && note.UserID == sharedUser.Id);
-//        await _repositoryNotes.RemoveAsync(deleteNote);
-//
-//        return new ServiceResponse();
-//    }
-//
-//    public async Task<ServiceResponse<NoteDto>> AcceptSharedNote(string userID, int noteTextID, int notificationID)
-//    {
-//        int order = 0;
-//        if (_repositoryNotes.HasNote(userID))
-//        {
-//            order = _repositoryNotes.GetMinimalNoteOrder(userID) - 1;
-//        }
-//
-//        var newNote = new Note { Order = order, UserID = userID, NoteTextID = noteTextID, UserRole = UserRoleForNote.Editor };
-//        await _repositoryNotes.CreateAsync(newNote);
-//        newNote = await _repositoryNotes.GetByAsync(el => el.ID == newNote.ID, el => el.NoteText);
-//
-//        NoteDto newNoteDto = _mapper.Map<NoteDto>(newNote);
-//
-//        await _notificationsService.DeleteNotification(userID, notificationID);
-//
-//        return new ServiceResponse<NoteDto>(newNoteDto);
-//    }
-//
-//    public async Task<ServiceResponse> DeclineSharedNote(string userID, int noteTextID, int notificationID)
-//    {
-//        var result = await _notificationsService.DeleteNotification(userID, notificationID);
-//        return result;
-//    }
-//
-//    public async Task<ServiceResponse<string>> GetOwnerID(string userID, int noteTextID)
-//    {
-//        var resultNoteID = await GetNoteID(userID, noteTextID);
-//        if (!resultNoteID.Success)
-//        {
-//            return new ServiceResponse<string>(error: resultNoteID.Error);
-//        }
-//        if (!(await _repositoryNotes.HasAccessForUser(resultNoteID.ModelRequest, userID)))
-//        {
-//            return new ServiceResponse<string>(error: "Not allowed");
-//        }
-//        var note = await _repositoryNotes.GetByAsync(note => note.NoteTextID == noteTextID && note.UserRole == UserRoleForNote.Owner);
-//        if (note == null)
-//        {
-//            return new ServiceResponse<string>(error: "Note is not found");
-//        }
-//        return new ServiceResponse<string>(modelRequest: note.UserID);
-//    }
-//
-//    public async Task<ServiceResponse<int>> GetNoteID(string userID, int noteTextID)
-//    {
-//        var note = await _repositoryNotes.GetByAsync(note => note.NoteTextID == noteTextID && note.UserID == userID);
-//        if (note == null)
-//        {
-//            return new ServiceResponse<int>("Note is not found");
-//        }
-//        return new ServiceResponse<int>(note.ID);
-//    }
+    public ServiceResponse DeleteSharedUser(String currentUserName, String sharedUserEmail, int noteTextID)
+    {
+        var note = userRepository.findByUserName(currentUserName).get()
+            .getNotes().stream()
+            .filter(n -> n.getNoteText().getId() == noteTextID)
+            .findFirst().get();
+        if (note.getUserRole() != UserRoleForNote.Owner)
+        {
+            return new ServiceResponse("Don't has access");
+        }
+
+        var sharedUser = userRepository.findByEmail(sharedUserEmail).get();
+        if (sharedUser == null)
+        {
+            return new ServiceResponse();
+        }
+
+        var deleteNote = sharedUser.getNotes().stream().filter(not -> not.getNoteText().getId() == noteTextID).findFirst().get();
+        noteRepository.delete(deleteNote);
+
+        return new ServiceResponse();
+    }
+
+    public ServiceResponseT<NoteDto> AcceptSharedNote(String userName, int noteTextID, int notificationID)
+    {
+        int order = -100;
+        var user = userRepository.findByUserName(userName).get();
+
+        var newNote = new Note();
+        newNote.setOrder(order); newNote.setUser(user); newNote.setNoteText(noteTextRepository.getById(noteTextID)); newNote.setUserRole(UserRoleForNote.Editor);
+        noteRepository.save(newNote);
+
+        notificationsService.deleteNotification(userName, notificationID);
+
+        return new ServiceResponseT<>(noteMapper.noteToNoteDto(newNote));
+    }
+
+    public ServiceResponse DeclineSharedNote(String userName, int noteTextID, int notificationID)
+    {
+        var result = notificationsService.deleteNotification(userName, notificationID);
+        return result;
+    }
+
+    public ServiceResponseT<String> GetOwnerUserName(String userName, int noteTextID)
+    {
+        var note = userRepository.findByUserName(userName).get()
+                .getNotes().stream()
+                .filter(n -> n.getNoteText().getId() == noteTextID)
+                .findFirst().get();
+        var noteText = noteTextRepository.findById(note.getNoteText().getId()).get();
+        var resultNoteID = GetNoteID(userName, noteTextID);
+        if (!resultNoteID.isSuccess())
+        {
+            return new ServiceResponseT<>(resultNoteID);
+        }
+        note = noteRepository.findAllByNoteTextAndAndUserRole(noteText, UserRoleForNote.Owner).get().stream().findFirst().get();
+        if (note == null)
+        {
+            return new ServiceResponseT<>("Note is not found", true);
+        }
+        return new ServiceResponseT<>(note.getUser().getUserName(), true);
+    }
+
+    public ServiceResponseT<Integer> GetNoteID(String userName, int noteTextID)
+    {
+        var note = userRepository.findByUserName(userName).get()
+            .getNotes().stream()
+            .filter(n -> n.getNoteText().getId() == noteTextID)
+            .findFirst().get();
+        if (note == null)
+        {
+            return new ServiceResponseT<>("Note is not found");
+        }
+        return new ServiceResponseT<>(note.getId());
+    }
 }

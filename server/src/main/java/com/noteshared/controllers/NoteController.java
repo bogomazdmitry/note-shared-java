@@ -1,10 +1,16 @@
 package com.noteshared.controllers;
 
 import com.noteshared.domain.entities.notes.UserRoleForNote;
+import com.noteshared.domain.entities.users.UserRepository;
 import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.models.DTO.NoteTextDto;
+import com.noteshared.models.requests.AcceptOrDeclineSharedNote;
+import com.noteshared.models.requests.AddSharedUserRequest;
+import com.noteshared.models.requests.DeleteSharedUserRequest;
+import com.noteshared.models.responses.ServiceResponseT;
 import com.noteshared.services.NotesService;
+import com.noteshared.services.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,6 +26,8 @@ import java.util.Collection;
 public class NoteController extends BaseController{
     private final NotesService notesService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationsService notificationsService;
+    private final UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public NoteDto Get(int noteID)
@@ -73,14 +81,101 @@ public class NoteController extends BaseController{
         if(!resultUpdate.isSuccess()) {
             return ResultOf(resultUpdate);
         }
-        var resultEmails = notesService.getUserEmailListByNoteTextID(getCurrentUserName(), noteTextDto.getId());
-        if(resultEmails.isSuccess()) {
-            for (var userEmail : resultEmails.getModelRequest()) {
+        var resultUserNames = notesService.getUserNamesListByNoteTextID(getCurrentUserName(), noteTextDto.getId());
+        if(resultUserNames.isSuccess()) {
+            for (var userName : resultUserNames.getModelRequest()) {
                 messagingTemplate.convertAndSendToUser(
-                        userEmail, "/update-note-text",
+                        userName, "/update-note-text",
                         resultUpdate.getModelRequest());
             }
         }
         return ResultOf(resultUpdate);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="share-note-with-user")
+    public void ShareNoteWithUser(@RequestBody AddSharedUserRequest request)
+    {
+        var result = notesService.CanAddSharedUser(getCurrentUserName(), request.getEmail(), request.getNoteTextID());
+        if (!result.isSuccess())
+        {
+            ResultOf(result);
+        }
+
+        try {
+            var resultNotificationDto = notificationsService.SendRequestSharedNotification(getCurrentUserName(), request.getEmail(), request.getNoteTextID());
+            if (!resultNotificationDto.isSuccess())
+            {
+                resultNotificationDto.ConvertToServiceResponse();
+                return;
+            }
+            var sharedUser = userRepository.findByEmail(request.getEmail()).get();
+
+            messagingTemplate.convertAndSendToUser(
+                    getCurrentUserName(), "/send-new-notification",
+                    resultNotificationDto.getModelRequest());
+        }
+        catch (Exception ex) {}
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="accept-shared-note")
+    public NoteDto AcceptSharedNote(@RequestBody AcceptOrDeclineSharedNote request)
+    {
+        var result = notesService.AcceptSharedNote(getCurrentUserName(), request.getNoteTextID(), request.getNotificationID());
+        var ownerNoteUserNameResult = notesService.GetOwnerUserName(getCurrentUserName(), request.getNoteTextID());
+
+        if (!ownerNoteUserNameResult.isSuccess())
+        {
+            return ResultOf(new ServiceResponseT<>(ownerNoteUserNameResult.getError()));
+        }
+
+        var ownerNoteUserName = ownerNoteUserNameResult.getModelRequest();
+        try {
+            var resultNotificationDto = notificationsService.SendAcceptRequestSharedNotification(getCurrentUserName(), ownerNoteUserName, request.getNoteTextID());
+
+
+            messagingTemplate.convertAndSendToUser(
+                    ownerNoteUserName, "/send-new-notification",
+                    resultNotificationDto.getModelRequest());
+        } catch(Exception ex){}
+
+        return ResultOf(result);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="decline-shared-note")
+    public void DeclineSharedNote(@RequestBody AcceptOrDeclineSharedNote request)
+    {
+        var result = notesService.DeclineSharedNote(getCurrentUserName(), request.getNoteTextID(), request.getNotificationID());
+        var ownerNoteIDResult = notesService.GetOwnerUserName(getCurrentUserName(), request.getNoteTextID());
+
+        if (!ownerNoteIDResult.isSuccess())
+        {
+            return;
+        }
+
+        var ownerNoteID = ownerNoteIDResult.getModelRequest();
+
+        try {
+            var resultNotificationDto = notificationsService.SendDeclineRequestSharedNotification(getCurrentUserName(), ownerNoteID, request.getNoteTextID());
+
+            messagingTemplate.convertAndSendToUser(
+                    ownerNoteID, "/send-new-notification",
+                    resultNotificationDto.getModelRequest());
+        }catch (Exception ex){}
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, value="delete-shared-user")
+    public void DeleteSharedUser(@RequestBody DeleteSharedUserRequest deleteSharedUserRequest)
+    {
+        var sharedUser = userRepository.findByEmail(deleteSharedUserRequest.getEmail()).get();
+        if (sharedUser != null)
+        {
+            var noteID = notesService.GetNoteID(sharedUser.getUserName(), deleteSharedUserRequest.getNoteTextID());
+            messagingTemplate.convertAndSendToUser(
+                    sharedUser.getUserName(), "/delete-note-from-owner",
+                    noteID.getModelRequest());
+        }
+        var result = notesService.DeleteSharedUser(getCurrentUserName(), deleteSharedUserRequest.getEmail(), deleteSharedUserRequest.getNoteTextID());
+        ResultOf(result);
     }
 }

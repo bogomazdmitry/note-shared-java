@@ -45,4 +45,32 @@ export class NoteDataService extends BaseDataService {
       actionRoutes.notesSharedUsersEmails
     );
   }
+
+  shareNoteWithUser(email: string, noteTextID: number): Observable<any> {
+    return this.sendPostRequest(
+      JSON.stringify({ email, noteTextID}),
+      actionRoutes.requestSharedNote
+    );
+  }
+
+  acceptSharedNote(noteTextID: number, notificationID: number): Observable<any> {
+    return this.sendPostRequest(
+      JSON.stringify({ noteTextID, notificationID}),
+      actionRoutes.acceptSharedNote
+    );
+  }
+
+  declineSharedNote(noteTextID: number, notificationID: number): Observable<any> {
+    return this.sendPostRequest(
+      JSON.stringify({ noteTextID, notificationID}),
+      actionRoutes.declineSharedNote
+    );
+  }
+
+  deleteSharedUser(email: string, noteTextID: number): Observable<any> {
+        return this.sendPostRequest(
+      JSON.stringify({ email, noteTextID}),
+      actionRoutes.notesDeleteSharedUser
+    );
+  }
 }
