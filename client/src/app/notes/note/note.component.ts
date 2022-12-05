@@ -27,7 +27,8 @@ export class NoteComponent implements OnDestroy {
     private dialog: MatDialog,
     private overlay: Overlay,
     private readonly muuriService: MuuriService
-  ) {}
+  ) {
+  }
 
   public ngOnDestroy(): void {
     if (this.dialogIsOpened) {

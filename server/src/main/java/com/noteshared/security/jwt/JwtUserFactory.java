@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public final class JwtUserFactory {
 
     public JwtUser create(User user) {
-        return new JwtUser(user.getEmail(),
+        return new JwtUser(user.getUserName(),
                 user.getPassword());
     }
 

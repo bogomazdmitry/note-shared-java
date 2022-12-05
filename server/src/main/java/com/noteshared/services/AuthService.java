@@ -87,8 +87,9 @@ public class AuthService {
     private User findUser(SignInUserRequest authenticationDto) {
         String email = authenticationDto.getEmail();
         String password = authenticationDto.getPassword();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        return userRepository.findByEmail(email).get();
+        var user = userRepository.findByEmail(email).get();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), password));
+        return user;
     }
 
     private SignInResponse createSignInResponse(User user) {

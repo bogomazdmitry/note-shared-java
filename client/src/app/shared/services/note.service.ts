@@ -38,7 +38,6 @@ export class NoteService implements OnDestroy {
     this.noteSignalR
       .connectToUpdateNotes()
       .subscribe((updatedNoteText: NoteText | null) => {
-        console.log(updatedNoteText);
         if (updatedNoteText) {
           const indexNote = this.notes.findIndex((note) => note.noteText.id === updatedNoteText.id);
           this.notes[indexNote].noteText = updatedNoteText;
@@ -49,7 +48,6 @@ export class NoteService implements OnDestroy {
       .connectToDeleteNoteFromOwner()
       .subscribe((idDeleteNote) => {
         if (idDeleteNote) {
-          console.log(this.notes);
           this.notes = this.notes.filter((note) => note.id !== idDeleteNote);
         }
       });

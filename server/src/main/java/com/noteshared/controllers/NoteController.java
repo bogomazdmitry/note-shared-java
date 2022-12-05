@@ -1,5 +1,6 @@
 package com.noteshared.controllers;
 
+import com.noteshared.domain.entities.notes.UserRoleForNote;
 import com.noteshared.models.DTO.NoteDesignDto;
 import com.noteshared.models.DTO.NoteDto;
 import com.noteshared.models.DTO.NoteTextDto;
@@ -33,6 +34,7 @@ public class NoteController extends BaseController{
         var note = new NoteDto();
         note.setOrder(noteOrder);
         note.setNoteText(new NoteTextDto());
+        note.setUserRole(UserRoleForNote.Owner);
         var result = notesService.createNote(getCurrentUserName(), note);
         return ResultOf(result);
     }

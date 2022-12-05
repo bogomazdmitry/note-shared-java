@@ -43,12 +43,10 @@ export class NoteSignalRService {
   }
 
   public updateNoteText(noteText: NoteText): Observable<NoteText> {
-    this.noteDataService.updateNoteText(noteText).subscribe();
-    return of(noteText);
+    return this.noteDataService.updateNoteText(noteText);
   }
 
   public shareNoteWithUser(email: string, noteTextID: number): Observable<any> {
-    // this.stompClient.send(socketActionUrl.deleteNoteFromOwner, this.header, JSON.stringify({email, noteTextID}));
     return new Observable<any>();
   }
 
@@ -62,7 +60,6 @@ export class NoteSignalRService {
   }
 
   public disconnect(): void {
-    console.log('disconnected');
     this.stompClient.unsubscribe(hubMethodSubscription.noteTextUpdate);
     this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
     this.stompClient.disconnect(()=>{});

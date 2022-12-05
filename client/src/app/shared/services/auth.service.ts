@@ -47,7 +47,6 @@ export class AuthService {
   ): any {
     this.authDataService.sigIn(signinModel).subscribe(
       (token) => {
-        console.log(token);
         this.saveAccessToken(token.token);
         this.userService.getUserFromServer().subscribe((userInfo) => {
           this.userService.saveUser(userInfo);
