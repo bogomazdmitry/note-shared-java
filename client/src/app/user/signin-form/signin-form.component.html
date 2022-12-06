@@ -4,35 +4,35 @@
             <form #formSignIn class="signin-form" [formGroup]="signInFormValidator.formGroup" (submit)="onSubmit()">
                 <mat-card>
                     <mat-card-header class="pb-3">
-                        Login
+                        Вход
                     </mat-card-header>
                     <mat-card-content>
                         <mat-form-field #matInputEmail class="pb-3">
-                            <mat-label>Email</mat-label>
+                            <mat-label>Почта</mat-label>
                             <input #inputEmail matInput formControlName="email" value="" type="text">
                             <mat-error *ngIf="signInFormValidator.getFormField('email').invalid
                                 && signInFormValidator.getFormField('email').touched">
                                 <div *ngIf="signInFormValidator.hasError('email', 'required')">
-                                    Email is required
+                                    Почта обязательна
                                 </div>
                                 <mat-error *ngIf="signInFormValidator.hasError('email','email')">
-                                    Incorrect email
+                                  Неправильная почта
                                 </mat-error>
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="pb-3">
-                            <mat-label for="password">Password</mat-label>
+                            <mat-label for="password">Пароль</mat-label>
                             <input #inputPassword matInput formControlName="password" value="" type="password">
                             <mat-error *ngIf="signInFormValidator.getFormField('password').invalid
                                 && signInFormValidator.getFormField('password').touched">
-                                <div>Incorrect password</div>
+                                <div>Неправильный пароль</div>
                             </mat-error>
                         </mat-form-field>
                         <button mat-raised-button
                             color="primary"
                             type="submit"
                             [disabled]="signInFormValidator.formGroup.invalid || buttonDisable" >
-                            Login
+                            Логин
                         </button>
                     </mat-card-content>
                     <mat-card-footer>

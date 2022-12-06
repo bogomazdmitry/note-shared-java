@@ -8,11 +8,11 @@
       >
         <mat-card>
           <mat-card-header class="pb-3">
-            Changing information about you
+            Изменение информации про себя
           </mat-card-header>
           <mat-card-content>
             <mat-form-field class="pb-3">
-              <mat-label>User name</mat-label>
+              <mat-label>Имя</mat-label>
               <input
                 matInput
                 formControlName="userName"
@@ -29,17 +29,17 @@
                     userFormValidation.getFormField('userName').touched
                   "
                 >
-                  User name is required
+                  Имя обязательно
                 </div>
                 <div
                   *ngIf="userFormValidation.hasError('userName', 'notUnique')"
                 >
-                  User name is not unique
+                  Имя не уникально
                 </div>
               </mat-error>
             </mat-form-field>
             <mat-form-field class="pb-3">
-              <mat-label>Email</mat-label>
+              <mat-label>Почта</mat-label>
               <input
                 matInput
                 formControlName="email"
@@ -55,7 +55,7 @@
                     userFormValidation.getFormField('email').touched
                   "
                 >
-                  Email is required
+                  Почта обязательна
                 </div>
                 <div
                   *ngIf="
@@ -63,15 +63,15 @@
                     userFormValidation.getFormField('email').touched
                   "
                 >
-                  Incorrect email
+                  Неправильная почта
                 </div>
                 <div *ngIf="userFormValidation.hasError('email', 'notUnique')">
-                  Email is not unique
+                  Почта не уникальна
                 </div>
               </mat-error>
             </mat-form-field>
             <mat-form-field class="pb-3">
-              <mat-label for="password">Password</mat-label>
+              <mat-label for="password">Пароль</mat-label>
               <input matInput formControlName="oldPassword" type="password" />
               <mat-error
                 *ngIf="
@@ -86,50 +86,50 @@
                     else passwordNotEmpty
                   "
                 >
-                  Password is required
+                  Паоль обязателен
                 </div>
                 <ng-template #passwordNotEmpty>
-                  Your password contain the following:
+                  Пароль обязательно должен иметь:
                   <span
                     *ngIf="
                       userFormValidation.hasError('oldPassword', 'hasUpperCase')
                     "
                   >
-                    at least 1 uppercase letter;
+                    1 большая буква;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('oldPassword', 'hasLowerCase')
                     "
                   >
-                    at least 1 uppercase letter;
+                    1 маленькая буква;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('oldPassword', 'hasNumber')
                     "
                   >
-                    at least 1 number;
+                    1 число;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('oldPassword', 'hasLength')
                     "
                   >
-                    8-64 characters;
+                    8-64 знаков;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('oldPassword', 'mustMatch')
                     "
                   >
-                    password mismatch;
+                    пароли не совпадают;
                   </span>
                 </ng-template>
               </mat-error>
             </mat-form-field>
             <mat-form-field class="pb-3">
-              <mat-label for="password">New password</mat-label>
+              <mat-label for="password">Новый пароль</mat-label>
               <input matInput formControlName="newPassword" type="password" />
               <mat-error
                 *ngIf="
@@ -138,40 +138,40 @@
                 "
               >
                 <div>
-                  Your password contain the following:
+                  Пароль обязательно должен иметь:
                   <span
                     *ngIf="
                       userFormValidation.hasError('newPassword', 'hasUpperCase')
                     "
                   >
-                    at least 1 uppercase letter;
+                    1 большая буква;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('newPassword', 'hasLowerCase')
                     "
                   >
-                    at least 1 uppercase letter;
+                    1 маленькая буква;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('newPassword', 'hasNumber')
                     "
                   >
-                    at least 1 number;
+                  1 число;
                   </span>
                   <span
                     *ngIf="
                       userFormValidation.hasError('newPassword', 'hasLength')
                     "
                   >
-                    8-64 characters;
+                  8-64 знаков;
                   </span>
                 </div>
               </mat-error>
             </mat-form-field>
             <mat-form-field class="pb-3">
-              <mat-label>Confirm new password</mat-label>
+              <mat-label>Подтверждающий пароль</mat-label>
               <input
                 matInput
                 formControlName="confirmNewPassword"
@@ -182,7 +182,7 @@
                   userFormValidation.hasError('confirmNewPassword', 'mustMatch')
                 "
               >
-                Password is not confirm
+                Пароли не совпадают
               </mat-error>
             </mat-form-field>
             <button

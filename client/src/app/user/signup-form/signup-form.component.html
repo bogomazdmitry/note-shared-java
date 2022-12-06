@@ -4,85 +4,85 @@
             <form class="signup-form" [formGroup]="signUpFormValidator.formGroup" (submit)="onSubmit()">
                 <mat-card>
                     <mat-card-header class="pb-3">
-                        Registration
+                        Регистрация
                     </mat-card-header>
                     <mat-card-content>
                         <mat-form-field class="pb-3">
-                            <mat-label>User name</mat-label>
+                            <mat-label>Имя</mat-label>
                             <input matInput
                                 formControlName="userName"
                                 type="text" autocomplete="new-name">
                             <mat-error *ngIf="signUpFormValidator.getFormField('userName').invalid">
                                 <div *ngIf="signUpFormValidator.getFormField('userName').errors?.required
                                     && signUpFormValidator.getFormField('userName').touched">
-                                    User name is required
+                                    Имя обязательно
                                 </div>
                                 <div *ngIf="signUpFormValidator.hasError('userName','notUnique')">
-                                    User name is not unique
+                                    Имя не уникально
                                 </div>
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="pb-3">
-                            <mat-label>Email</mat-label>
+                            <mat-label>Почта</mat-label>
                             <input matInput
                                 formControlName="email"
                                 type="text" autocomplete="new-email">
                             <mat-error *ngIf="signUpFormValidator.getFormField('email').invalid">
                                 <div *ngIf="signUpFormValidator.getFormField('email').errors?.required
                                     && signUpFormValidator.getFormField('email').touched">
-                                    Email is required
+                                    Почта обязательна
                                 </div>
                                 <div *ngIf="signUpFormValidator.hasError('email','email')
                                     && signUpFormValidator.getFormField('email').touched">
-                                    Incorrect email
+                                    Неправильная почта
                                 </div>
                                 <div *ngIf="signUpFormValidator.hasError('email','notUnique')">
-                                    Email is not unique
+                                    Почта не уникальна
                                 </div>
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="pb-3">
-                            <mat-label for="password">Password</mat-label>
+                            <mat-label for="password">Пароль</mat-label>
                             <input matInput formControlName="password" type="password" autocomplete="new-password">
                             <mat-error *ngIf="signUpFormValidator.getFormField('password').invalid
                                 && signUpFormValidator.getFormField('password').touched">
                                 <div *ngIf="signUpFormValidator.getFormField('password').errors?.required;
                                     else passwordNotEmpty">
-                                    Password is required
+                                    Пароль обязателен
                                 </div>
                                 <ng-template #passwordNotEmpty>
-                                    Your password contain the following:
+                                    Пароль должен иметь:
                                     <span
                                         *ngIf="signUpFormValidator.hasError('password','hasUpperCase')">
-                                        at least 1 uppercase letter;
+                                        1 большую букву;
                                     </span>
                                     <span
                                         *ngIf="signUpFormValidator.hasError('password','hasLowerCase')">
-                                        at least 1 uppercase letter;
+                                        1 маленькую букву;
                                     </span>
                                     <span
                                         *ngIf="signUpFormValidator.hasError('password','hasNumber')">
-                                        at least 1 number;
+                                        1 число;
                                     </span>
                                     <span
                                         *ngIf="signUpFormValidator.hasError('password','hasLength')">
-                                        8-64 characters;
+                                        8-64 символов;
                                     </span>
                                 </ng-template>
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="pb-3">
-                            <mat-label>Confirm password</mat-label>
+                            <mat-label>Подтверждающий пароль</mat-label>
                             <input matInput formControlName="confirmPassword" type="password"  autocomplete="confirm-new-password">
                             <mat-error *ngIf="signUpFormValidator.hasError('confirmPassword','mustMatch')">
-                                Password is not confirm
+                                Пароли не совпадают
                             </mat-error>
                         </mat-form-field>
                         <button mat-raised-button
                             color="primary"
                             type="submit"
                             [disabled]="signUpFormValidator.formGroup.invalid || buttonDisable">
-                            Registration
+                            Зарегестрироваться
                         </button>
                     </mat-card-content>
                     <mat-card-footer>

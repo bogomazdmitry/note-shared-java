@@ -1,6 +1,6 @@
 <mat-toolbar class="mb-4" color="primary">
   <span>
-    <button mat-flat-button color="primary" routerLink="/">Shared notes</button>
+    <button mat-flat-button color="primary" routerLink="/">Заметочки</button>
   </span>
   <span class="flex-fill"></span>
   <shared-theme-changer></shared-theme-changer>
@@ -16,7 +16,7 @@
       (click)="signOut()"
       aria-label="Sign out"
     >
-      Sign out
+      Выход
     </button>
   </div>
   <ng-template #UnAuthorizeBlock>
@@ -29,7 +29,7 @@
       }"
       aria-label="Sign in"
     >
-      Sign in
+      Вход
     </button>
     <button
       mat-flat-button
@@ -37,7 +37,7 @@
       routerLink="/user/signup"
       aria-label="Sign up"
     >
-      Sign up
+      Регистрация
     </button>
   </ng-template>
 </mat-toolbar>

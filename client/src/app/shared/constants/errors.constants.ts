@@ -1,8 +1,8 @@
 export const signInErrors: { [key: string]: string } = {
-  lockedOut: 'You are locked out',
-  notAllowed: 'Not allowed',
-  requiresTwoFactor: 'Requires two factor',
-  invalidCredentials: 'Email or password is incorrect',
+  lockedOut: 'Вы заблокированы',
+  notAllowed: 'Нет доступа',
+  requiresTwoFactor: 'Нужна двухфакторная аутентификация',
+  invalidCredentials: 'Емэил или пароль не верны',
 };
 
-export const somethingWentWrong = 'Something went wrong';
+export const somethingWentWrong = 'Что-то пошло не так';
