@@ -1,0 +1,34 @@
+@import "~bootstrap/scss/bootstrap-grid.scss";
+@import './../../../variables.scss';
+
+
+table {
+  width: 100%;
+}
+
+th, td {
+  overflow: hidden;
+  width:auto;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-column-text {
+  width: 40% !important;
+  padding-right: 5px;
+}
+
+.mat-column-title {
+  width: 40% !important;
+  padding-right: 5px;
+}
+
+.mat-column-color {
+  width: 10% !important;
+  padding-right: 5px;
+}
+
+.mat-column-controls {
+  width: 10% !important;
+  padding-right: 5px;
+}

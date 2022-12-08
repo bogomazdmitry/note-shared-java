@@ -13,7 +13,9 @@ export class MuuriService {
   public grid: Grid;
   public gridElement: ElementRef;
 
-  public constructor(protected readonly noteService: NoteService) {}
+  public constructor(protected readonly noteService: NoteService) {
+
+  }
 
   public setGridElement(gridElement: ElementRef): void {
     this.gridElement = gridElement;
@@ -119,6 +121,7 @@ export class MuuriService {
   }
 
   public updateOrder(): void {
+    console.log('update');
     const muuriElements: any = this.grid.getItems();
     for (let i = 0; i < muuriElements.length; ++i) {
       if (muuriElements[i]) {

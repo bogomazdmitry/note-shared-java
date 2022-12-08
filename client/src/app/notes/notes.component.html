@@ -7,6 +7,15 @@
   </div>
   <notifications-home> </notifications-home>
 </div>
+<div class="w-100 search-bar">
+  <mat-form-field class="example-full-width">
+    <span matPrefix> </span>
+    <input type="tel" matInput placeholder="Поиск" name="поиск" [(ngModel)]="searchItem">
+    <button matSuffix mat-button (click)="clickSearch()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
 <div #gridElement class="grid hide">
   <div class="item col p-1" *ngFor="let note of getNotes()">
     <div class="item-content">

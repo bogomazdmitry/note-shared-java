@@ -13,6 +13,8 @@ import { ColorPaletteService } from './color-palette.service';
 @Injectable({ providedIn: 'root' })
 export class NoteService implements OnDestroy {
   public notes: Note[];
+  public notesSearch: Note[] | null;
+  public searchingMode = false;
 
   public constructor(
     private readonly noteDataService: NoteDataService,
@@ -76,15 +78,17 @@ export class NoteService implements OnDestroy {
   }
 
   public createNote(): Observable<Note> {
-    const order = -1;
-    const observable = this.noteDataService.createNote(order);
-    observable.subscribe((newNote) => {
-      if (!this.notes) {
-        this.notes = [];
-      }
-      this.notes.push(newNote);
-    });
-    return observable;
+    if(!this.searchingMode) {
+      const order = -1;
+      const observable = this.noteDataService.createNote(order);
+      observable.subscribe((newNote) => {
+        if (!this.notes) {
+          this.notes = [];
+        }
+        this.notes.push(newNote);
+      });
+    }
+    return new Observable<Note>();
   }
 
   public getNotes(): Observable<Note[]> {
@@ -92,7 +96,11 @@ export class NoteService implements OnDestroy {
   }
 
   public updateOrder(notesOrder: NoteOrder[]): Observable<NoteOrder[]> {
-    return this.notesDataService.updateOrder(notesOrder);
+    if(!this.searchingMode) {
+      console.log('to database');
+      return this.notesDataService.updateOrder(notesOrder);
+    }
+    return new Observable<NoteOrder[]>();
   }
 
   public updateNoteDesign(
@@ -124,5 +132,23 @@ export class NoteService implements OnDestroy {
 
   public addNote(note: Note): void {
     this.notes.unshift(note);
+  }
+
+  public searchNotes(searchItem: string) {
+    if(!searchItem) {
+      if(this.notesSearch) {
+        this.notes = this.notesSearch.sort((a,b) => -a.order + b.order);
+        this.notesSearch = null;
+        this.searchingMode = false;
+      }
+    }
+    else {
+      this.searchingMode = true;
+      if(!this.notesSearch || this.notesSearch.length < this.notes.length) {
+        this.notesSearch = this.notes;
+      }
+      this.notes = this.notesSearch.filter((n) => n.noteText.text && n.noteText.text.includes(searchItem)
+      || n.noteText.title && n.noteText.title.includes(searchItem));
+    }
   }
 }

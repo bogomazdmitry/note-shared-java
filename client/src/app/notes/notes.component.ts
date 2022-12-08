@@ -17,11 +17,13 @@ import { Note } from '../shared/models/note.model';
 export class NotesComponent implements AfterViewInit, OnDestroy {
   @ViewChild('gridElement', { read: ElementRef })
   public gridElement: ElementRef;
+  public searchItem: string;
 
   public constructor(
     private readonly noteService: NoteService,
     private readonly muuriService: MuuriService
-  ) {}
+  ) {
+  }
 
   public ngAfterViewInit(): void {
     this.muuriService.setGridElement(this.gridElement);
@@ -40,6 +42,11 @@ export class NotesComponent implements AfterViewInit, OnDestroy {
 
   public getNotes(): Note[] {
     return this.noteService.notes;
+  }
+
+
+  public clickSearch() {
+    this.noteService.searchNotes(this.searchItem);
   }
 
   public ngOnDestroy(): void {
