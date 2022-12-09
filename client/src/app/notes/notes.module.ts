@@ -9,15 +9,21 @@ import { NotesComponent } from './notes.component';
 import { NoteDialogComponent } from './note-dialog/note-dialog.component';
 import { NotesSheetComponent } from './notes-sheet/notes-sheet.component';
 import { RouterModule } from '@angular/router';
+import { NoteViewComponent } from './note-view/note-view.component';
+import { ShareNoteComponent } from './share-note/share-note.component';
+import { NgxMatFileInputModule } from '@angular-material-components/file-input';
+
 @NgModule({
   declarations: [
     NoteComponent,
     NotesComponent,
     NoteDialogComponent,
     NotesSheetComponent,
+    NoteViewComponent,
+    ShareNoteComponent,
   ],
   imports: [
-    BrowserModule, BrowserAnimationsModule,
+    BrowserModule, BrowserAnimationsModule, NgxMatFileInputModule,
     CommonModule, SharedModule, NotificationsModule, RouterModule, BrowserModule],
   entryComponents: [NoteDialogComponent],
 })

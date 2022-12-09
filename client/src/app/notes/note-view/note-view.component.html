@@ -1,0 +1,30 @@
+<button mat-icon-button class="mx-1 flex-shrink-2 col-auto" (click)="saveNote()">
+  <mat-icon>save</mat-icon>
+</button>
+
+
+<button mat-button class="mx-1 flex-shrink-2 col-auto" (click)="saveToFile()">
+  Сохранить в файл
+</button>
+
+<button mat-button class="mx-1 flex-shrink-2 col-auto" *ngIf="!note?.shared; else unSharedNote" (click)="shareNote()">
+  Поделисться со всеми
+</button>
+<ng-template #unSharedNote>
+  <button mat-button class="mx-1 flex-shrink-2 col-auto" (click)="unShareNote()">
+    Не делисться со всеми
+  </button>
+  <a>{{sharedLink}}</a>
+</ng-template>
+
+<mat-form-field class="px-0 w-100">
+  <input matInput [(ngModel)]="note.noteText.title" />
+</mat-form-field>
+
+<div [style.height]="hightTextArea">
+  <div mat-dialog-content class="h-100">
+    <mat-form-field class="w-100 h-100">
+      <textarea matInput [(ngModel)]="note.noteText.text"> </textarea>
+    </mat-form-field>
+  </div>
+</div>

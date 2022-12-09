@@ -1,0 +1,11 @@
+<mat-form-field class="px-0 w-100">
+  <input readonly matInput [(ngModel)]="note.noteText.title" />
+</mat-form-field>
+
+<div [style.height]="hightTextArea">
+  <div mat-dialog-content class="h-100">
+    <mat-form-field class="w-100 h-100">
+      <textarea readonly matInput [(ngModel)]="note.noteText.text"> </textarea>
+    </mat-form-field>
+  </div>
+</div>

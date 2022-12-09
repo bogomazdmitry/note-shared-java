@@ -1,0 +1,25 @@
+@import '../../../mixins.scss';
+
+textarea.mat-input-element {
+  resize: none;
+}
+
+textarea {
+  height: 100%;
+}
+
+.mat-dialog-content {
+  max-height: none;
+}
+
+.mat-form-field-infix {
+  height: 100%;
+}
+
+mat-form-field.mat-form-field-wrapper {
+  height: 100%;
+}
+
+.mat-form-field-flex {
+  height: 100%;
+}

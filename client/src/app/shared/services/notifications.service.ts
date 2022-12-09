@@ -37,9 +37,7 @@ export class NotificationsService implements OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {
-    this.notificationSignalR.disconnectToUpdateNote();
-  }
+  public ngOnDestroy(): void {}
 
 
   public deleteNotificationFromUI(id: number): Observable<any> | void {

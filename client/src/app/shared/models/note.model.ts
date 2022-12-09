@@ -11,4 +11,5 @@ export interface Note {
   noteText: NoteText;
   hexColor: string | undefined;
   userRole: UserRoleForNote;
+  shared: boolean;
 }

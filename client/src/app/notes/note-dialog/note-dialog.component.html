@@ -37,6 +37,9 @@
     <button mat-icon-button mat-icon-button [matMenuTriggerFor]="colorPalette">
       <mat-icon> palette </mat-icon>
     </button>
+    <button mat-icon-button routerLink="/view" [queryParams]="{ id: note.id }">
+      <mat-icon>remove_red_eye</mat-icon>
+    </button>
     <mat-menu #colorPalette="matMenu" class="colorPalette">
       <color-circle
         color="{{ note.hexColor }}"

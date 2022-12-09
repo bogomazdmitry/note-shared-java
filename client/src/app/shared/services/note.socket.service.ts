@@ -1,14 +1,14 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { hubMethodSubscription, socketPrefix } from '../constants/url.constants';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { NoteText } from '../models/note-text.model';
 import { NoteDataService } from './note.data.service';
 import * as Stomp from 'stompjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class NoteSocketService {
+export class NoteSocketService implements OnDestroy {
   private socket: WebSocket;
   private stompClient: Stomp.Client;
   private observableUpdateNoteText: BehaviorSubject<NoteText | null>;
@@ -58,13 +58,6 @@ export class NoteSocketService {
     return this.observableUpdateNoteText;
   }
 
-  public disconnect(): void {
-    this.stompClient.unsubscribe(hubMethodSubscription.noteTextUpdate);
-    this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
-    this.stompClient.disconnect(() => { });
-    this.socket.close();
-  }
-
   public deleteSharedUser(email: string, noteTextID: number): Observable<any> {
     return this.noteDataService.deleteSharedUser(email, noteTextID);
   }
@@ -75,5 +68,11 @@ export class NoteSocketService {
 
   public acceptSharedNote(noteTextID: number, notificationID: number): Observable<any> {
     return this.noteDataService.acceptSharedNote(noteTextID, notificationID);
+  }
+
+  public ngOnDestroy(): void {
+    this.stompClient.unsubscribe(hubMethodSubscription.noteTextUpdate);
+    this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
+    this.socket.close();
   }
 }

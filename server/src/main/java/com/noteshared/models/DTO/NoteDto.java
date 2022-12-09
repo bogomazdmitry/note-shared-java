@@ -25,4 +25,6 @@ public class NoteDto {
     private String userID;
 
     private UserRoleForNote userRole;
+    
+    private boolean isShared = false;
 }

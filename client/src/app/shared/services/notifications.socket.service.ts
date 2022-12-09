@@ -1,12 +1,12 @@
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { hubMethodSubscription, socketPrefix } from '../constants/url.constants';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as Stomp from 'stompjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class NotificationsSocketService {
+export class NotificationsSocketService implements OnDestroy {
   private socket: WebSocket;
   private stompClient: Stomp.Client;
   private header: {
@@ -38,7 +38,7 @@ export class NotificationsSocketService {
     return this.notificationBehaviorSubject;
   }
 
-  public disconnectToUpdateNote(): void {
+  public ngOnDestroy(): void {
     this.stompClient.unsubscribe(hubMethodSubscription.deleteNoteFromOwner);
     this.stompClient.disconnect(()=>{});
   }

@@ -13,7 +13,12 @@ export class NoteDataService extends BaseDataService {
     super(httpClient, controllerRoutes.note);
   }
 
+  public getNote(noteID: number): Observable<Note> {
+    return this.sendGetRequest({noteID}, actionRoutes.notesGet);
+  }
+
   public updateNote(note: Note): Observable<Note> {
+    console.log(note);
     return this.sendPostRequest(JSON.stringify(note), actionRoutes.noteUpdate);
   }
 

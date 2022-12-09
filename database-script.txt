@@ -74,3 +74,6 @@ ALTER TABLE note_history
 
 ALTER TABLE note_design
     ADD CONSTRAINT FK_NOTEDESIGN_ON_NOTE FOREIGN KEY (note_id) REFERENCES note (id);
+
+ALTER TABLE note
+add    is_shared       BIT(1)             NULL default 0;

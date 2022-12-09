@@ -47,4 +47,6 @@ public class Note implements Serializable {
     private User user;
 
     private UserRoleForNote userRole;
+
+    private boolean isShared = false;
 }

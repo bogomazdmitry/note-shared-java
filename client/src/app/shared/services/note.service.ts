@@ -23,6 +23,7 @@ export class NoteService implements OnDestroy {
     private readonly themeService: ThemeService,
     private readonly colorPaletteService: ColorPaletteService
   ) {
+
     this.getNotes().subscribe((notes) => {
       this.notes = notes;
 
@@ -55,9 +56,7 @@ export class NoteService implements OnDestroy {
       });
   }
 
-  public ngOnDestroy(): void {
-    this.noteSignalR.disconnect();
-  }
+  public ngOnDestroy(): void { }
 
   public updateNote(note: Note): Observable<Note> {
     const subscription = this.noteDataService.updateNote(note);
@@ -78,7 +77,7 @@ export class NoteService implements OnDestroy {
   }
 
   public createNote(): Observable<Note> {
-    if(!this.searchingMode) {
+    if (!this.searchingMode) {
       const order = -1;
       const observable = this.noteDataService.createNote(order);
       observable.subscribe((newNote) => {
@@ -91,12 +90,48 @@ export class NoteService implements OnDestroy {
     return new Observable<Note>();
   }
 
+  public createNoteFromTemplate(newNoteTemplate: Note): void {
+    console.log('3');
+    if (!this.searchingMode) {
+      const order = -1;
+      const observable = this.noteDataService.createNote(order);
+      observable.subscribe((newNote) => {
+        if (newNoteTemplate.noteDesign) {
+          newNote.noteDesign = { color: newNoteTemplate.noteDesign.color };
+        }
+        console.log('4');
+        if (newNoteTemplate.noteText) {
+          newNote.noteText.text = newNoteTemplate.noteText.text;
+          newNote.noteText.title = newNoteTemplate.noteText.title;
+        };
+        console.log('5');
+        console.log(newNoteTemplate);
+        this.updateNoteText(newNote.noteText).subscribe();
+        if(newNote.noteDesign) {
+          this.updateNoteDesign(newNote.noteDesign, newNote.id).subscribe();
+        }
+        if (!this.notes) {
+          this.notes = [];
+        }
+        newNote.hexColor = this.colorPaletteService.getColorHexFromPalletByColorTitle(
+          newNote.noteDesign?.color
+        );
+        this.notes.push(newNote);
+      });
+    }
+  }
+
+
+  public getNote(noteID: number): Observable<Note> {
+    return this.noteDataService.getNote(noteID);
+  }
+
   public getNotes(): Observable<Note[]> {
     return this.notesDataService.getNotes();
   }
 
   public updateOrder(notesOrder: NoteOrder[]): Observable<NoteOrder[]> {
-    if(!this.searchingMode) {
+    if (!this.searchingMode) {
       console.log('to database');
       return this.notesDataService.updateOrder(notesOrder);
     }
@@ -135,20 +170,20 @@ export class NoteService implements OnDestroy {
   }
 
   public searchNotes(searchItem: string) {
-    if(!searchItem) {
-      if(this.notesSearch) {
-        this.notes = this.notesSearch.sort((a,b) => -a.order + b.order);
+    if (!searchItem) {
+      if (this.notesSearch) {
+        this.notes = this.notesSearch.sort((a, b) => -a.order + b.order);
         this.notesSearch = null;
         this.searchingMode = false;
       }
     }
     else {
       this.searchingMode = true;
-      if(!this.notesSearch || this.notesSearch.length < this.notes.length) {
+      if (!this.notesSearch || this.notesSearch.length < this.notes.length) {
         this.notesSearch = this.notes;
       }
       this.notes = this.notesSearch.filter((n) => n.noteText.text && n.noteText.text.includes(searchItem)
-      || n.noteText.title && n.noteText.title.includes(searchItem));
+        || n.noteText.title && n.noteText.title.includes(searchItem));
     }
   }
 }

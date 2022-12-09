@@ -41,9 +41,16 @@ public class NotesService {
     public ServiceResponseT<NoteDto> getNote(String currentUserName, int noteID) {
         var user = userRepository.findByUserName(currentUserName).get();
         var noteList = user.getNotes();
-        var note = noteList.stream().filter(n -> n.getId() == noteID).findFirst().get();
+        var count = noteList.stream().filter(n -> n.getId() == noteID).findFirst().stream().count();
+
+        var note = noteRepository.findById(noteID).get();
         var noteDto = noteMapper.noteToNoteDto(note);
-        return new ServiceResponseT<>(noteDto);
+        if(note.isShared() || count != 0) {
+            return new ServiceResponseT<>(noteDto);
+        }
+        else {
+            return new ServiceResponseT<>("Not allowed");
+        }
     }
 
     // OK
