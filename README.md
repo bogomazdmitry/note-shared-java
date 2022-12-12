@@ -8,13 +8,15 @@
 
 Ссылка на [реферат](реферат.docx).
 
-Все исходники диаграмм лежат в папке [drawio](drawio).
-
 Скрипт для генерации базы данных: [ссылка на скрипт](database-script.txt).
 
 ### Схемы алгоритмов
-![alt text]("drawio/images/Алгоритм БЛ.drawio.png")
-![alt text]("drawio/images/Схема алгоритмов.drawio.png")
+![alt text](https://github.com/bogomazdmitry/NoteSharedJava/blob/coursework/drawio/images/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%20%D0%91%D0%9B.drawio.png)
+![alt text](https://github.com/bogomazdmitry/NoteSharedJava/blob/coursework/drawio/images/%D0%A1%D1%85%D0%B5%D0%BC%D0%B0%20%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D0%BE%D0%B2.drawio.png)
+
+Все исходники диаграмм лежат в папке [drawio](drawio).
+
+Все изображения диаграмм лежат в папке [drawio/images](drawio/images).
 
 ## Видео для сдачи курсового проекта
 
