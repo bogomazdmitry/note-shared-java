@@ -6,6 +6,8 @@
 
 Записка оставлена в корне проекта с названием [записка](записка.docx). [View raw](https://github.com/bogomazdmitry/NoteSharedJava/blob/coursework/%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%BA%D0%B0.docx?raw=true) для скачивания записки.
 
+Ссылка на [реферат](реферат.docx).
+
 Все исходники диаграмм лежат в папке [drawio](drawio).
 
 Скрипт для генерации базы данных: [ссылка на скрипт](database-script.txt).
