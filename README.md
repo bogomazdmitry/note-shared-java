@@ -4,6 +4,8 @@
 
 Записка оставлена в корне проекта с названием [записка](записка.dox).
 
-Скрипт для генерации базы данных: [ссылка на скрипт](database-script.txt)
+Все исходники диаграмм лежат в папке [drawio](drawio).
+
+Скрипт для генерации базы данных: [ссылка на скрипт](database-script.txt).
 ## Видео для сдачи курсового проекта
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/2tX94yRz09M/0.jpg)](https://www.youtube.com/watch?v=2tX94yRz09M)
