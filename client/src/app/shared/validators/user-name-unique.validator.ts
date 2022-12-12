@@ -12,6 +12,7 @@ export const isUniqueUserName = (
       authDataService.checkUniqueUserName(userName).subscribe(
         (answer) => {},
         (httpErrorResponse) => {
+          httpErrorResponse = 'userName notUnique';
           handleErrors(httpErrorResponse);
         }
       );

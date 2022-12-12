@@ -16,6 +16,7 @@ export class BaseDataService {
   ): Observable<any> {
     if (!headers.get('Content-type')) {
       headers = headers.set('Content-Type', 'application/json');
+      headers = headers.set('responseType', 'text');
     }
     return this.httpClient.post(
       environment.serverUrl + (prefix ? this.controllerRoute : '') + actionRoute,
