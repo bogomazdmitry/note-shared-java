@@ -46,7 +46,7 @@ export abstract class BaseFormService {
   public handleErrors(httpErrorResponse: HttpErrorResponse): void {
     console.log(httpErrorResponse);
     try {
-      const errorMessage = httpErrorResponse.split(' ');
+      const errorMessage = httpErrorResponse.error.split(' ');
       if (!this.setError(errorMessage[0], errorMessage[1])) {
         this.handleGlobalErrors(httpErrorResponse);
       }
