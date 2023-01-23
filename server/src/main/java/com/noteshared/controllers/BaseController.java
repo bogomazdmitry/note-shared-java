@@ -1,9 +1,11 @@
 package com.noteshared.controllers;
 
+import com.noteshared.models.CustomHttpError;
 import com.noteshared.models.responses.ServiceResponse;
 import com.noteshared.models.responses.ServiceResponseT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,19 +21,19 @@ public class BaseController {
         return result;
     }
 
-    protected <TModel> TModel ResultOf(ServiceResponseT<TModel> answer) {
+    protected <TModel> ResponseEntity<TModel> ResultOf(ServiceResponseT<TModel> answer) {
         if (answer.isSuccess())
         {
-            return answer.getModelRequest();
+            return new ResponseEntity<>(answer.getModelRequest(), HttpStatus.OK);
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, answer.getError());
+        throw new CustomHttpError(HttpStatus.BAD_REQUEST, answer.getError());
     }
 
-    protected String ResultOf(ServiceResponse answer) {
+    protected ResponseEntity<String> ResultOf(ServiceResponse answer) {
         if (!answer.isSuccess())
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, answer.getError());
+            throw new CustomHttpError(HttpStatus.BAD_REQUEST, answer.getError());
         }
-        return "OK";
+        return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 }

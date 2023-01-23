@@ -30,13 +30,16 @@ public class AuthService {
 
     public ServiceResponseT<SignInResponse> signIn(SignInUserRequest authenticationDTO) {
         if (authenticationDTO.getEmail() == null || authenticationDTO.getPassword() == null) {
-            return new ServiceResponseT<>("Bad credential");
+            return new ServiceResponseT<>("invalidCredentials");
         }
         try {
             User user = findUser(authenticationDTO);
+            if(user == null) {
+                return new ServiceResponseT<>("invalidCredentials");
+            }
             return new ServiceResponseT<>(createSignInResponse(user));
         } catch (AuthenticationException e) {
-            return new ServiceResponseT<>("Invalid email or password");
+            return new ServiceResponseT<>("invalidCredentials");
         }
     }
 
@@ -87,6 +90,9 @@ public class AuthService {
     private User findUser(SignInUserRequest authenticationDto) {
         String email = authenticationDto.getEmail();
         String password = authenticationDto.getPassword();
+        if(!userRepository.existsByEmail(email)) {
+            return null;
+        }
         var user = userRepository.findByEmail(email).get();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), password));
         return user;

@@ -77,15 +77,17 @@ public class NotesService {
 
     public ServiceResponseT<NoteDto> updateNote(String currentUserName, NoteDto updateNoteDto) {
         var user = userRepository.findByUserName(currentUserName).get();
-        var noteList = user.getNotes();
+        var note = noteRepository.findById(updateNoteDto.getId()).get();
 
-        var note = (Note)noteList.stream().filter(n -> n.getId() == updateNoteDto.getId()).toArray()[0];
-        if(note == null) {
+        if(note.getUser().getId() != user.getId()) {
             return new ServiceResponseT<>("Not allowed");
         }
         updateNoteDto.setUserRole(note.getUserRole());
 
         note = noteMapper.noteDtoToNote(updateNoteDto);
+        note.setUser(user);
+        note.setNoteText(noteMapper.noteTextDtoToNoteText(updateNoteDto.getNoteText()));
+        note.setNoteDesign(noteMapper.noteDesignDtoToNoteDesign(updateNoteDto.getNoteDesign()));
         var updatedNote = noteRepository.save(note);
 
         var updatedNoteDto = noteMapper.noteToNoteDto(updatedNote);

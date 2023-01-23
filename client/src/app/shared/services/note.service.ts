@@ -59,6 +59,7 @@ export class NoteService implements OnDestroy {
   public ngOnDestroy(): void { }
 
   public updateNote(note: Note): Observable<Note> {
+    console.log(note);
     const subscription = this.noteDataService.updateNote(note);
     subscription.subscribe();
     return subscription;

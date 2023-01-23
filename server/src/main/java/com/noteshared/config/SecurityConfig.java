@@ -24,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private static final String SIGN_IN_ENDPOINT = "/api/auth/signin";
     private static final String SIGN_UP_ENDPOINT = "/api/auth/signup";
+
+    private static final String SHARED_ENDPOINT = "/shared";
     private static final String CHECK_UNIQUE_USER_NAME_ENDPOINT = "/api/auth/check-unique-user-name";
     private static final String CHECK_UNIQUE_EMAIL_ENDPOINT = "/api/auth/check-unique-email";
 
@@ -42,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(SIGN_IN_ENDPOINT).permitAll()
                 .antMatchers(SIGN_UP_ENDPOINT).permitAll()
+                .antMatchers(SHARED_ENDPOINT).permitAll()
                 .antMatchers(CHECK_UNIQUE_EMAIL_ENDPOINT).permitAll()
                 .antMatchers(CHECK_UNIQUE_USER_NAME_ENDPOINT).permitAll()
                 .anyRequest().authenticated()

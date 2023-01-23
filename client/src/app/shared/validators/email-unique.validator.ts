@@ -12,7 +12,6 @@ export const isUniqueEmail = (
       authDataService.checkUniqueEmail(email).subscribe(
         (answer) => {},
         (httpErrorResponse) => {
-          httpErrorResponse = 'email notUnique';
           handleErrors(httpErrorResponse);
         }
       );

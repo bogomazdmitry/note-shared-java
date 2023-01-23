@@ -13,6 +13,7 @@ import com.noteshared.services.NotesService;
 import com.noteshared.services.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +31,14 @@ public class NoteController extends BaseController{
     private final UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public NoteDto Get(int noteID)
+    public ResponseEntity<NoteDto> Get(int noteID)
     {
         var result = notesService.getNote(getCurrentUserName(), noteID);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public NoteDto Create(@RequestBody int noteOrder)
+    public ResponseEntity<NoteDto> Create(@RequestBody int noteOrder)
     {
         var note = new NoteDto();
         note.setOrder(noteOrder);
@@ -48,35 +49,35 @@ public class NoteController extends BaseController{
     }
 
     @RequestMapping(method = RequestMethod.POST, value="delete-note")
-    public void Delete(@RequestBody int noteID)
+    public ResponseEntity<String> Delete(@RequestBody int noteID)
     {
         var result = notesService.deleteNote(getCurrentUserName(), noteID);
-        ResultOf(result);
+        return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-note")
-    public NoteDto UpdateNote(@RequestBody NoteDto updateNoteDto)
+    public ResponseEntity<NoteDto> UpdateNote(@RequestBody NoteDto updateNoteDto)
     {
         var result = notesService.updateNote(getCurrentUserName(), updateNoteDto);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-note-design")
-    public NoteDesignDto UpdateDesignNote(@RequestBody NoteDesignDto updateNoteDesignDto)
+    public ResponseEntity<NoteDesignDto> UpdateDesignNote(@RequestBody NoteDesignDto updateNoteDesignDto)
     {
         var result = notesService.updateNoteDesign(getCurrentUserName(), updateNoteDesignDto);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.GET, value="shared-users-emails")
-    public Collection<String> GetSharedUserEmails(int noteTextID)
+    public ResponseEntity<Collection<String>> GetSharedUserEmails(int noteTextID)
     {
         var result = notesService.getUserEmailListByNoteTextID(getCurrentUserName(), noteTextID);
         return ResultOf(result);
     }
 
     @RequestMapping(method = RequestMethod.POST, value="update-note-text")
-    public NoteTextDto UpdateNoteText(@RequestBody NoteTextDto noteTextDto) {
+    public ResponseEntity<NoteTextDto> UpdateNoteText(@RequestBody NoteTextDto noteTextDto) {
         var resultUpdate = notesService.updateNoteText(getCurrentUserName(), noteTextDto);
         if(!resultUpdate.isSuccess()) {
             return ResultOf(resultUpdate);
@@ -118,7 +119,7 @@ public class NoteController extends BaseController{
     }
 
     @RequestMapping(method = RequestMethod.POST, value="accept-shared-note")
-    public NoteDto AcceptSharedNote(@RequestBody AcceptOrDeclineSharedNote request)
+    public ResponseEntity<NoteDto> AcceptSharedNote(@RequestBody AcceptOrDeclineSharedNote request)
     {
         var result = notesService.AcceptSharedNote(getCurrentUserName(), request.getNoteTextID(), request.getNotificationID());
         var ownerNoteUserNameResult = notesService.GetOwnerUserName(getCurrentUserName(), request.getNoteTextID());

@@ -44,7 +44,6 @@ export abstract class BaseFormService {
   }
 
   public handleErrors(httpErrorResponse: HttpErrorResponse): void {
-    console.log(httpErrorResponse);
     try {
       const errorMessage = httpErrorResponse.error.split(' ');
       if (!this.setError(errorMessage[0], errorMessage[1])) {
@@ -58,12 +57,12 @@ export abstract class BaseFormService {
   public handleGlobalErrors(httpErrorResponse: HttpErrorResponse): void {
     if (
       !this.globalErrors ||
-      this.globalErrors[httpErrorResponse.error.error_description] === undefined
+      this.globalErrors[httpErrorResponse.error] === undefined
     ) {
       this.showError(somethingWentWrong);
     } else {
       this.showError(
-        this.globalErrors[httpErrorResponse.error.error_description]
+        this.globalErrors[httpErrorResponse.error]
       );
     }
   }
