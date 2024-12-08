@@ -1,3 +1,7 @@
+# App for storing notes
+
+It is a copy from https://github.com/bogomazdmitry/note-shared. But for my coursework I needed to convert this app to Java
+
 # Приложение для хранения заметок
 
 В приложение был добавлен русский язык
